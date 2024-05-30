@@ -38,7 +38,10 @@ class ProfileController extends Controller
         $avatar = $data['avatar'] ? $data['avatar'] : null;
 
         if ($cover){
-            $path = $cover->store('avatars/'.$user->id, 'public');
+            if ($user->cover_path){
+                Storage::disk('public')->delete($user->cover_path);
+            }
+            $path = $cover->store('user-'.$user->id, 'public');
             $user->update(['cover_path' => $path]);
         }
 
