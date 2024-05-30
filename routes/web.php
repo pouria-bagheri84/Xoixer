@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile');
+Route::get('/@/{user:username}', [ProfileController::class, 'index'])->name('profile');
 
 Route::middleware('auth')->group(function () {
     Route::post('/profile/update-images', [ProfileController::class, 'updateImage'])->name('profile.updateImage');
