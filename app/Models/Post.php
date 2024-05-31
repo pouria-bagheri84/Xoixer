@@ -11,4 +11,24 @@ class Post extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $fillable = [
+        'body',
+        'user_id'
+    ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(PostAttachment::class);
+    }
 }
