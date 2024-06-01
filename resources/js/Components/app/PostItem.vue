@@ -1,32 +1,85 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { PencilIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
+import PostUserHeader from './PostUserHeader.vue'
 
-  defineProps({
-    post: Object
-  })
+const props = defineProps({
+  post: Object
+})
 
-  function isImage(attachment){
-    const mime = attachment.mime.split('/')
-    return mime[0].toLowerCase() === "image"
-  }
+const emit = defineEmits(['editClick'])
+
+function isImage(attachment){
+  const mime = attachment.mime.split('/')
+  return mime[0].toLowerCase() === "image"
+}
+
+function openEditModal(){
+  emit('editClick', props.post)
+}
 </script>
 
 
 <template>
   <div class="bg-white border rounded p-4 shadow mb-4">
-    <div class="flex items-center gap-2">
-      <a href="javascipt:void(0)">
-        <img :src="post.user.avatar_url" alt="" class="w-[48px] h-[48px] rounded-full border border-2 transition-all hover:border-blue-700">
-      </a>
-      <div>
-        <h4 class="font-bold">
-          <a href="javascipt:void(0)" class="hover:underline">{{ post.user.name }}</a>
-          <template v-if="post.group">
+    <div class="flex items-center justify-between">
+      <PostUserHeader :post="post"/>
+      <div class="justify-self-end">
+        <Menu as="div" class="relative inline-block text-left">
+            <div>
+              <MenuButton class="flex items-center justify-center w-8 h-8 rounded-full transition hover:bg-black/5">
+                <EllipsisVerticalIcon class="w-5 h-5"/>
+              </MenuButton>
+            </div>
+
+            <transition
+                enter-active-class="transition duration-100 ease-out"
+                enter-from-class="transform scale-95 opacity-0"
+                enter-to-class="transform scale-100 opacity-100"
+                leave-active-class="transition duration-75 ease-in"
+                leave-from-class="transform scale-100 opacity-100"
+                leave-to-class="transform scale-95 opacity-0"
             >
-            <a href="javascipt:void(0)" class="hover:underline">{{ post.group.name }}</a>
-          </template>
-        </h4>
-        <small class="text-gray-400">{{ post.created_at }}</small>
+              <MenuItems
+                  class="absolute right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+              >
+                <div class="px-1 py-1">
+                  <MenuItem v-slot="{ active }">
+                    <button
+                        @click="openEditModal"
+                        :class="[
+                        active ? 'bg-indigo-500 text-white' : 'text-gray-900',
+                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                      ]"
+                    >
+                      <PencilIcon
+                          class="mr-2 h-5 w-5"
+                          aria-hidden="true"
+                      />
+                      Edit
+                    </button>
+                  </MenuItem>
+                </div>
+                <div class="px-1 py-1">
+                  <MenuItem v-slot="{ active }">
+                    <button
+                        :class="[
+                  active ? 'bg-indigo-500 text-white' : 'text-gray-900',
+                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                ]"
+                    >
+                      <TrashIcon
+                          class="mr-2 h-5 w-5"
+                          aria-hidden="true"
+                      />
+                      Delete
+                    </button>
+                  </MenuItem>
+                </div>
+              </MenuItems>
+            </transition>
+          </Menu>
       </div>
     </div>
     <div>
