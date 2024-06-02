@@ -34,7 +34,7 @@
                   as="h3"
                   class="flex items-center justify-between py-2 px-3 text-lg font-medium leading-6 text-gray-900"
               >
-                Update Post
+                {{ form.id ? 'Update Post' : 'Create Post' }}
                 <button @click="closeModal" class="flex items-center justify-center w-8 h-8 rounded-full transition hover:bg-black/5">
                   <XMarkIcon class="w-5 h-5"/>
                 </button>
@@ -75,7 +75,7 @@ import {
 } from '@headlessui/vue'
 import PostUserHeader from './PostUserHeader.vue'
 import {useForm} from "@inertiajs/vue3";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
 
 const props = defineProps({
   post: {
@@ -85,7 +85,9 @@ const props = defineProps({
   modelValue: Boolean
 })
 const editor = ClassicEditor
-const editorConfig = {toolbar: ['heading', '|', 'bold', 'italic', '|', 'link', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'undo', 'redo', '|', 'blockQuote']}
+const editorConfig = {
+  toolbar: ['heading', '|', 'bold', 'italic', '|', 'link', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'undo', 'redo', '|', 'blockQuote'],
+}
 
 const form = useForm({
   id: null,
@@ -110,11 +112,24 @@ function closeModal() {
 }
 
 function submit(){
-  form.put(route('post.update', {
-    post: props.post.id
-  }), {
-    preserveScroll: true,
-    onSuccess: ()=> closeModal()
-  })
+  if (form.id){
+    form.put(route('post.update', {
+      post: props.post.id
+    }), {
+      preserveScroll: true,
+      onSuccess: ()=> {
+        closeModal()
+        form.reset()
+      }
+    })
+  }else {
+    form.post(route('post.store'), {
+      preserveScroll: true,
+      onSuccess: ()=> {
+        closeModal()
+        form.reset()
+      }
+    })
+  }
 }
 </script>
