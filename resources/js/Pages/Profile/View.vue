@@ -2,7 +2,7 @@
 import {computed, ref} from 'vue'
 import {XMarkIcon, CheckCircleIcon, CameraIcon} from '@heroicons/vue/24/solid'
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
-import {useForm, usePage} from "@inertiajs/vue3";
+import {useForm, usePage, Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import Edit from "@/Pages/Profile/Edit.vue";
@@ -94,6 +94,7 @@ function submitAvatarImage(){
 </script>
 
 <template>
+  <Head :title="user.name"/>
   <AuthenticatedLayout>
     <div class="max-w-[850px] mx-auto h-full overflow-auto">
       <div v-show="showNotification && success" class="my-2 py-2 px-3 rounded font-medium text-sm bg-emerald-500 text-white">

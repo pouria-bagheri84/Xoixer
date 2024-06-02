@@ -53,7 +53,7 @@ const post2 = {
   user: {
     id: 1,
     name: "Elon Musk",
-    avatar: "https://randomuser.me/api/portraits/lego/2.jpg"
+    avatar_url: "https://randomuser.me/api/portraits/lego/2.jpg"
   },
   group: {
     id: 1,
