@@ -27,7 +27,8 @@ const editorConfig = {
 
 const form = useForm({
   id: null,
-  body: ''
+  body: '',
+  attachments: []
 })
 
 const show = computed({
@@ -52,6 +53,7 @@ function closeModal() {
 }
 
 function submit(){
+  form.attachments = attachmentFiles.value.map(myfile => myfile.file)
   if (form.id){
     form.put(route('post.update', {
       post: props.post.id
@@ -108,7 +110,7 @@ function removeFile(file) {
 <template>
   <teleport to="body">
     <TransitionRoot appear :show="show" as="template">
-    <Dialog as="div" @close="closeModal" class="relative z-10">
+    <Dialog as="div" @close="closeModal" class="relative z-50">
       <TransitionChild
           as="template"
           enter="duration-300 ease-out"
@@ -144,13 +146,13 @@ function removeFile(file) {
               <div class="p-3 mt-2">
                 <PostUserHeader :post="post" :show-time="false" class="mb-3"/>
                 <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 my-4">
+                <div class="grid gap-3 my-4" :class="[attachmentFiles.length === 1 ? 'grid-cols-1' : 'grid-cols-2']">
                   <template v-for="(myFile, index) of attachmentFiles">
                     <div class="group aspect-square bg-indigo-50 text-gray-500 flex flex-col items-center justify-center relative">
                       <button @click="removeFile(myFile)" class="absolute right-1 top-1 z-20 p-1 hover:border hover:border-1 hover:border-gray-100 bg-gray-800 hover:text-white text-gray-500 text-xs flex items-center rounded-full">
                         <XMarkIcon class="h-5 w-5"/>
                       </button>
-                      <img v-if="isImage(myFile.file)" :src="myFile.url" alt="" class="object-cover aspect-square">
+                      <img v-if="isImage(myFile.file)" :src="myFile.url" alt="" class="object-contain aspect-square">
                       <template v-else>
                         <PaperClipIcon class="w-11 h-11 mb-3"/>
                         <small class="text-center">{{ myFile.file.name }}</small>
