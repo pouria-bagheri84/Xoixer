@@ -10,7 +10,7 @@ const props = defineProps({
   post: Object
 })
 
-const emit = defineEmits(['editClick'])
+const emit = defineEmits(['editClick', 'attachmentClick'])
 
 function openEditModal(){
   emit('editClick', props.post)
@@ -22,6 +22,10 @@ function deletePost(){
       preserveScroll: true
     })
   }
+}
+
+function openAttachment(ind){
+  emit('attachmentClick', props.post, ind)
 }
 </script>
 
@@ -106,7 +110,7 @@ function deletePost(){
     </div>
     <div class="grid gap-3 mb-4" :class="[post.attachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2']">
       <template v-for="(attachment, index) of post.attachments.slice(0,4)">
-        <div class="group aspect-square bg-indigo-50 text-gray-500 flex flex-col items-center justify-center relative">
+        <div @click="openAttachment(index)" class="group aspect-square bg-indigo-50 text-gray-500 flex flex-col items-center justify-center relative cursor-pointer">
 <!--          Download btn-->
           <a :href="route('post.download', attachment)" class="z-20 opacity-0 group-hover:opacity-100 transition-all absolute right-2 top-2 cursor-pointer bg-gray-600 hover:bg-gray-800 text-gray-100 flex items-center justify-center w-8 h-8 rounded">
             <ArrowDownTrayIcon class="w-5 h-5"/>
@@ -120,10 +124,10 @@ function deletePost(){
                alt=""
                class="object-contain aspect-square">
 
-          <template v-else>
+          <div v-else class="flex flex-col justify-center items-center">
             <PaperClipIcon class="w-11 h-11"/>
             <small>{{ attachment.name }}</small>
-          </template>
+          </div>
         </div>
       </template>
     </div>
