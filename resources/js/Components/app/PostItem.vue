@@ -110,7 +110,7 @@ function deletePost(){
           <button class="z-20 opacity-0 group-hover:opacity-100 transition-all absolute right-2 top-2 cursor-pointer bg-gray-600 hover:bg-gray-800 text-gray-100 flex items-center justify-center w-8 h-8 rounded">
             <ArrowDownTrayIcon class="w-5 h-5"/>
           </button>
-          <div v-if="index === 3" class="absolute left-0 top-0 right-0 bottom-0 z-10 text-2xl bg-black/50 text-white flex items-center justify-center">
+          <div v-if="index === 3 && post.attachments.length > 4" class="absolute left-0 top-0 right-0 bottom-0 z-10 text-2xl bg-black/50 text-white flex items-center justify-center">
             + {{post.attachments.length - 4}} more...
           </div>
           <img v-if="isImage(attachment)"
