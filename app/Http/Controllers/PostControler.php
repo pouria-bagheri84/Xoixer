@@ -114,4 +114,9 @@ class PostControler extends Controller
         }
         $post->delete();
     }
+
+    public function downloadAttachment(PostAttachment $attachment)
+    {
+        return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
+    }
 }
