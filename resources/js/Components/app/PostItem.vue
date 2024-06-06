@@ -126,7 +126,7 @@ function openAttachment(ind){
 
           <div v-else class="flex flex-col justify-center items-center">
             <PaperClipIcon class="w-11 h-11"/>
-            <small>{{ attachment.name }}</small>
+            <small class="text-center">{{ attachment.name }}</small>
           </div>
         </div>
       </template>
