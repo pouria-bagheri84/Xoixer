@@ -28,7 +28,6 @@ const currentIndex = computed({
 const attachment = computed(() => {
   return props.attachments[currentIndex.value]
 })
-console.log(attachment)
 const emit = defineEmits(['update:modelValue', 'update:index', 'hide'])
 function closeModal() {
   show.value = false

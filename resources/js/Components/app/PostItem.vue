@@ -112,7 +112,7 @@ function openAttachment(ind){
       <template v-for="(attachment, index) of post.attachments.slice(0,4)">
         <div @click="openAttachment(index)" class="group aspect-square bg-indigo-50 text-gray-500 flex flex-col items-center justify-center relative cursor-pointer">
 <!--          Download btn-->
-          <a :href="route('post.download', attachment)" class="z-20 opacity-0 group-hover:opacity-100 transition-all absolute right-2 top-2 cursor-pointer bg-gray-600 hover:bg-gray-800 text-gray-100 flex items-center justify-center w-8 h-8 rounded">
+          <a @click.stop :href="route('post.download', attachment)" class="z-20 opacity-0 group-hover:opacity-100 transition-all absolute right-2 top-2 cursor-pointer bg-gray-600 hover:bg-gray-800 text-gray-100 flex items-center justify-center w-8 h-8 rounded">
             <ArrowDownTrayIcon class="w-5 h-5"/>
           </a>
 <!--          /Download btn-->
