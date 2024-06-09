@@ -50,7 +50,6 @@ function onModalHide() {
     <AttachmentPreviewPostModal :attachments="previewAttachmentsPost.post?.attachments || []"
                                 v-model:index="previewAttachmentsPost.index"
                                 v-model="showAttachmentsModal"/>
-    />
   </div>
 
 </template>

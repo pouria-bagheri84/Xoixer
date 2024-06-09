@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/post/{post}', [PostControler::class ,'update'])->name('post.update');
     Route::delete('/post/{post}', [PostControler::class ,'destroy'])->name('post.destroy');
     Route::get('/post/download/{attachment}', [PostControler::class, 'downloadAttachment'])->name('post.download');
+    Route::post('/post/{post}/reaction', [PostControler::class, 'postReaction'])->name('post.reaction');
 });
 
 require __DIR__.'/auth.php';
