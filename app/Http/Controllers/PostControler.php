@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Enums\PostReactionEnum;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\CommentResource;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostAttachment;
 use App\Models\PostReaction;
@@ -31,8 +33,8 @@ class PostControler extends Controller
             $post = Post::create($data);
             /** @var UploadedFile[] $files */
             $files = $data['attachments'] ?: [];
-            foreach ($files as $file){
-                $path = $file->store('attachments/'.$post->id, 'public');
+            foreach ($files as $file) {
+                $path = $file->store('attachments/' . $post->id, 'public');
                 $allFilePaths[] = $path;
                 PostAttachment::create([
                     'post_id' => $post->id,
@@ -44,7 +46,7 @@ class PostControler extends Controller
                 ]);
             }
             DB::commit();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             foreach ($allFilePaths as $path) {
                 Storage::disk('public')->delete($path);
             }
@@ -112,7 +114,7 @@ class PostControler extends Controller
     {
         //TODO
         $id = Auth::id();
-        if ($post->user_id !== $id){
+        if ($post->user_id !== $id) {
             return response("You don't have permission to delete this post", 403);
         }
         $post->delete();
@@ -131,12 +133,11 @@ class PostControler extends Controller
 
         $userID = Auth::id();
         $userReaction = PostReaction::all()->where('user_id', $userID)->where('post_id', $post->id)->first();
-//        dd($userReaction);
 
-        if ($userReaction){
+        if ($userReaction) {
             $hasReaction = false;
             $userReaction->delete();
-        }else{
+        } else {
             $hasReaction = true;
             PostReaction::create([
                 'post_id' => $post->id,
@@ -151,5 +152,20 @@ class PostControler extends Controller
             'num_of_reactions' => $reactions,
             'current_user_has_reaction' => $hasReaction,
         ]);
+    }
+
+    public function postComment(Post $post, Request $request)
+    {
+        $data = $request->validate([
+            'comment' => ['required']
+        ]);
+
+        $comment = Comment::create([
+            'post_id' => $post->id,
+            'comment' => nl2br($data['comment']['_value']),
+            'user_id' => Auth::id()
+        ]);
+
+        return response(new CommentResource($comment), 201);
     }
 }

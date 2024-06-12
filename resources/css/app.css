@@ -48,6 +48,10 @@
     color: blue;
 }
 
+.ck-content-output > *:last-child{
+    margin-bottom: 0;
+}
+
 .ck-content-output > blockquote,
 .ck-content-output > dl,
 .ck-content-output > dd,
