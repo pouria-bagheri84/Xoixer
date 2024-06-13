@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Enums\PostReactionEnum;
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use function Pest\Laravel\delete;
 
 class PostControler extends Controller
 {
@@ -167,5 +169,25 @@ class PostControler extends Controller
         ]);
 
         return response(new CommentResource($comment), 201);
+    }
+
+    public function deleteComment(Comment $comment)
+    {
+        if ($comment->user_id !== Auth::id()){
+            return response('You Don\'t Have Permission To Delete This Comment...', 403);
+        }
+        $comment->delete();
+        return response('Deleted Comment Successfully', 204);
+    }
+
+    public function updateComment(UpdateCommentRequest $request, Comment $comment)
+    {
+        $data = $request->validated();
+
+        $comment->update([
+            'comment' => nl2br($data['comment'])
+        ]);
+
+        return new CommentResource($comment);
     }
 }

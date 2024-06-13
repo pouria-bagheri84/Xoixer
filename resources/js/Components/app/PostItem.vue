@@ -1,7 +1,6 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon, HandThumbUpIcon, ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline'
+import { ArrowDownTrayIcon, PaperClipIcon, HandThumbUpIcon, ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline'
 import PostUserHeader from './PostUserHeader.vue'
 import {router, usePage} from "@inertiajs/vue3";
 import {isImage} from "@/helpers.js";
@@ -10,12 +9,16 @@ import InputTextarea from "@/Components/InputTextarea.vue";
 import IndigoButton from "@/Components/app/IndigoButton.vue";
 import {ref} from "vue";
 import ReadMoreReadLess from './ReadMoreReadLess.vue'
+import EditDeleteDropdown from './EditDeleteDropdown.vue'
+import DangerButton from "@/Components/DangerButton.vue";
 
 const props = defineProps({
   post: Object
 })
 
 const newCommentText = ref('')
+
+const editingComment = ref(null)
 
 const emit = defineEmits(['editClick', 'attachmentClick'])
 
@@ -57,6 +60,38 @@ function createComment() {
         props.post.num_of_comments ++;
       })
 }
+
+function startCommentEdit(comment) {
+  // console.log(comment.comment)
+  editingComment.value = {
+    id: comment.id,
+    comment: comment.comment.replace(/<br\s*\/?>/gi, '\n')
+  }
+}
+
+function deleteComment(comment) {
+  if (!window.confirm('Are You Sure You Want To Delete This Comment?')){
+    return false
+  }
+  axiosClient.delete(route('post.comment.delete', comment.id))
+      .then(({data}) => {
+        props.post.comments = props.post.comments.filter(c => c.id !== comment.id)
+        props.post.num_of_comments --;
+      })
+}
+
+function updateComment() {
+  axiosClient.put(route('post.comment.update', editingComment.value.id), editingComment.value)
+      .then(({data}) => {
+        editingComment.value = null
+        props.post.comments = props.post.comments.map((c)=> {
+          if (c.id === data.id){
+            return data
+          }
+          return c
+        })
+      })
+}
 </script>
 
 
@@ -64,63 +99,7 @@ function createComment() {
   <div class="bg-white border rounded p-4 shadow mb-4">
     <div class="flex items-center justify-between">
       <PostUserHeader :post="post"/>
-      <div class="justify-self-end">
-        <Menu as="div" class="relative inline-block text-left">
-            <div>
-              <MenuButton class="flex items-center justify-center w-8 h-8 rounded-full transition hover:bg-black/5">
-                <EllipsisVerticalIcon class="w-5 h-5"/>
-              </MenuButton>
-            </div>
-
-            <transition
-                enter-active-class="transition duration-100 ease-out"
-                enter-from-class="transform scale-95 opacity-0"
-                enter-to-class="transform scale-100 opacity-100"
-                leave-active-class="transition duration-75 ease-in"
-                leave-from-class="transform scale-100 opacity-100"
-                leave-to-class="transform scale-95 opacity-0"
-            >
-              <MenuItems
-                  class="z-30 absolute right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
-              >
-                <div class="px-1 py-1">
-                  <MenuItem v-slot="{ active }">
-                    <button
-                        @click="openEditModal"
-                        :class="[
-                        active ? 'bg-indigo-500 text-white' : 'text-gray-900',
-                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                      ]"
-                    >
-                      <PencilIcon
-                          class="mr-2 h-5 w-5"
-                          aria-hidden="true"
-                      />
-                      Edit
-                    </button>
-                  </MenuItem>
-                </div>
-                <div class="px-1 py-1">
-                  <MenuItem v-slot="{ active }">
-                    <button
-                        @click="deletePost"
-                        :class="[
-                        active ? 'bg-indigo-500 text-white' : 'text-gray-900',
-                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                      ]"
-                    >
-                      <TrashIcon
-                          class="mr-2 h-5 w-5"
-                          aria-hidden="true"
-                      />
-                      Delete
-                    </button>
-                  </MenuItem>
-                </div>
-              </MenuItems>
-            </transition>
-          </Menu>
-      </div>
+      <EditDeleteDropdown :user="post.user" @edit="openEditModal" @delete="deletePost"/>
     </div>
     <div>
       <ReadMoreReadLess :content="post.body" />
@@ -182,20 +161,30 @@ function createComment() {
           </div>
           <div>
             <div v-for="comment of post.comments" :key="comment.id" class="mb-4">
-              <div class="flex gap-2">
-                <a href="javascript:void(0)" class="w-[45px] h-[45px]">
-                  <img :src="comment.user.avatar_url" class="w-[45px] h-[45px] rounded-full border border-2 transition-all hover:border-blue-500"/>
-                </a>
-                <div>
-                  <h4 class="font-bold">
-                    <a href="javascript:void(0)" class="hover:underline">
-                      {{ comment.user.name }}
-                    </a>
-                  </h4>
-                  <small class="text-xs text-gray-400">{{ comment.updated_at }}</small>
+              <div class="flex justify-between gap-2">
+                <div class="flex gap-2">
+                  <a href="javascript:void(0)" class="w-[45px] h-[45px]">
+                    <img :src="comment.user.avatar_url" class="w-[45px] h-[45px] rounded-full border border-2 transition-all hover:border-blue-500"/>
+                  </a>
+                  <div>
+                    <h4 class="font-bold">
+                      <a href="javascript:void(0)" class="hover:underline">
+                        {{ comment.user.name }}
+                      </a>
+                    </h4>
+                    <small class="text-xs text-gray-400">{{ comment.updated_at }}</small>
+                  </div>
+                </div>
+                <EditDeleteDropdown :user="comment.user" @edit="startCommentEdit(comment)" @delete="deleteComment(comment)"/>
+              </div>
+              <div v-if="editingComment && editingComment.id === comment.id" class="ml-12">
+                <InputTextarea v-model="editingComment.comment" placeholder="Enter your comment here" rows="1" class="w-full max-h-[150px] resize-none"></InputTextarea>
+                <div class="flex justify-end">
+                  <DangerButton @click="editingComment = null" class="rounded-r-none">Cancel</DangerButton>
+                  <IndigoButton @click="updateComment" class="rounded-l-none">Update</IndigoButton>
                 </div>
               </div>
-              <ReadMoreReadLess :content="comment.comment" content-class="text-sm flex flex-1 ml-12" />
+              <ReadMoreReadLess v-else :content="comment.comment" content-class="text-sm flex flex-1 ml-12" />
             </div>
           </div>
         </DisclosurePanel>
