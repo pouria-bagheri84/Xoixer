@@ -160,13 +160,15 @@ class PostControler extends Controller
     public function postComment(Post $post, Request $request)
     {
         $data = $request->validate([
-            'comment' => ['required']
+            'comment' => ['required'],
+            'parent_id' => ['nullable', 'exists:comments,id']
         ]);
 
         $comment = Comment::create([
             'post_id' => $post->id,
-            'comment' => nl2br($data['comment']['_value']),
-            'user_id' => Auth::id()
+            'comment' => nl2br($data['comment']),
+            'user_id' => Auth::id(),
+            'parent_id' => $data['parent_id'] ?: null
         ]);
 
         return response(new CommentResource($comment), 201);

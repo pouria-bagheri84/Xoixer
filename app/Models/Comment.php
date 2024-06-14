@@ -14,7 +14,8 @@ class Comment extends Model
     protected $fillable = [
         'post_id',
         'comment',
-        'user_id'
+        'user_id',
+        'parent_id'
     ];
 
     public function user(): BelongsTo
@@ -30,5 +31,10 @@ class Comment extends Model
     public function reactions(): MorphMany
     {
         return $this->morphMany(Reaction::class, 'object');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 }
