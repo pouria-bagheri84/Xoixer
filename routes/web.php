@@ -16,14 +16,17 @@ Route::middleware('auth')->group(function () {
 //    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     Route::post('/post', [PostControler::class ,'store'])->name('post.store');
     Route::put('/post/{post}', [PostControler::class ,'update'])->name('post.update');
     Route::delete('/post/{post}', [PostControler::class ,'destroy'])->name('post.destroy');
     Route::get('/post/download/{attachment}', [PostControler::class, 'downloadAttachment'])->name('post.download');
     Route::post('/post/{post}/reaction', [PostControler::class, 'postReaction'])->name('post.reaction');
-    Route::post('/post/{post}/comment', [PostControler::class, 'postComment'])->name('post.comment.create');
-    Route::delete('/comment/{comment}', [PostControler::class, 'deleteComment'])->name('post.comment.delete');
-    Route::put('/comment/{comment}', [PostControler::class, 'updateComment'])->name('post.comment.update');
+
+    Route::post('/post/{post}/comment', [PostControler::class, 'postComment'])->name('comment.create');
+    Route::delete('/comment/{comment}', [PostControler::class, 'deleteComment'])->name('comment.delete');
+    Route::put('/comment/{comment}', [PostControler::class, 'updateComment'])->name('comment.update');
+    Route::post('/comment/{comment}/reaction', [PostControler::class, 'commentReaction'])->name('comment.reaction');
 });
 
 require __DIR__.'/auth.php';
