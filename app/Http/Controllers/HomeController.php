@@ -16,18 +16,9 @@ class HomeController extends Controller
 
         $posts = Post::query()
             ->withCount('reactions')
-            ->withCount('comments')
             ->with([
                 'comments' => function ($query) use ($userID) {
-                    $query
-                        ->whereNull('parent_id')
-                        ->withCount('reactions')
-                        ->withCount('comments')
-                        ->with([
-                            'reactions' => function ($query) use ($userID) {
-                                $query->where('user_id', $userID);
-                            }
-                        ]);
+                    $query->withCount('reactions');
                 },
                 'reactions' => function ($query) use ($userID){
                 $query->where('user_id', $userID);
