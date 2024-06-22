@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -18,7 +20,9 @@ class Group extends Model
         'name',
         'user_id',
         'auto_approval',
-        'about'
+        'about',
+        'cover_path',
+        'thumbnail_path'
     ];
 
 
@@ -28,5 +32,15 @@ class Group extends Model
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug')
             ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function currentUserGroup(): HasOne
+    {
+        return $this->hasOne(GroupUser::class)->where('user_id', Auth::id());
+    }
+
+    public function isAdmin($userID): bool
+    {
+        return $this->currentUserGroup->user_id == $userID;
     }
 }

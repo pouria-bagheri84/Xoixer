@@ -12,6 +12,8 @@ Route::get('/', [HomeController::class, 'index'])->middleware(['auth', 'verified
 
 Route::get('/@/{user:username}', [ProfileController::class, 'index'])->name('profile');
 
+Route::get('/g%/{group:slug}', [GroupController::class, 'profile'])->name('group.profile');
+
 Route::middleware('auth')->group(function () {
     Route::post('/profile/update-images', [ProfileController::class, 'updateImage'])->name('profile.updateImage');
 //    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/comment/{comment}/reaction', [PostControler::class, 'commentReaction'])->name('comment.reaction');
 
     Route::post('/group', [GroupController::class, 'store'])->name('group.create');
+    Route::post('/group/update-images/{group:slug}', [GroupController::class, 'updateImage'])->name('group.updateImages');
 });
 
 require __DIR__.'/auth.php';
