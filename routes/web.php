@@ -32,7 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/comment/{comment}/reaction', [PostControler::class, 'commentReaction'])->name('comment.reaction');
 
     Route::post('/group', [GroupController::class, 'store'])->name('group.create');
-    Route::post('/group/update-images/{group:slug}', [GroupController::class, 'updateImage'])->name('group.updateImages');
+    Route::post('/group/update-images/{group:slug}', [GroupController::class, 'updateImage'])->name('group.update.images');
+    Route::post('/group/invite-users/{group:slug}', [GroupController::class, 'inviteUsers'])->name('group.invite.users');
 });
+    Route::get('/group/approve-invitation/{token}', [GroupController::class, 'approveInvitation'])->name('group.approve.invitation');
 
 require __DIR__.'/auth.php';

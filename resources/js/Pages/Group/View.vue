@@ -6,6 +6,7 @@ import {useForm, Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "../../Components/PrimaryButton.vue"
+import InviteUserModal from "./InviteUserModal.vue"
 
 
 const imagesForm = useForm({
@@ -29,6 +30,7 @@ const props = defineProps({
 
 const coverImageSrc = ref('')
 const thumbnailImageSrc = ref('')
+const showInviteUserModal = ref(false)
 
 function onCoverChange(event){
   imagesForm.cover = event.target.files[0]
@@ -62,7 +64,7 @@ function cancelThumbnailImage(){
 }
 
 function submitCoverImage(){
-  imagesForm.post(route('group.updateImages', props.group.slug), {
+  imagesForm.post(route('group.update.images', props.group.slug), {
     onSuccess: ()=> {
       showNotification.value = true
       cancelCoverImage()
@@ -74,7 +76,7 @@ function submitCoverImage(){
 }
 
 function submitThumbnailImage(){
-  imagesForm.post(route('group.updateImages', props.group.slug), {
+  imagesForm.post(route('group.update.images', props.group.slug), {
     onSuccess: ()=> {
       showNotification.value = true
       cancelThumbnailImage()
@@ -139,7 +141,7 @@ function submitThumbnailImage(){
           <div class="flex justify-between items-center flex-1 p-4">
             <h2 class="font-bold text-lg">{{ group.name }}</h2>
 
-            <PrimaryButton v-if="isCurrentUserAdmin">Invite Users</PrimaryButton>
+            <PrimaryButton v-if="isCurrentUserAdmin" @click="showInviteUserModal = true">Invite Users</PrimaryButton>
             <PrimaryButton v-if="!group.role && group.auto_approval">Join to Group</PrimaryButton>
             <PrimaryButton v-if="!group.role && !group.auto_approval">Request to join</PrimaryButton>
           </div>
@@ -181,6 +183,7 @@ function submitThumbnailImage(){
       </div>
     </div>
   </AuthenticatedLayout>
+  <InviteUserModal v-model="showInviteUserModal"/>
 </template>
 
 <style>
