@@ -2,7 +2,7 @@
 import {computed, ref} from 'vue'
 import {XMarkIcon, CheckCircleIcon, CameraIcon} from '@heroicons/vue/24/solid'
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
-import {useForm, Head} from "@inertiajs/vue3";
+import {useForm, Head, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "../../Components/PrimaryButton.vue"
@@ -31,6 +31,7 @@ const props = defineProps({
 const coverImageSrc = ref('')
 const thumbnailImageSrc = ref('')
 const showInviteUserModal = ref(false)
+const authUser = usePage().props.auth.user;
 
 function onCoverChange(event){
   imagesForm.cover = event.target.files[0]
@@ -85,6 +86,10 @@ function submitThumbnailImage(){
       }, 3000)
     }
   })
+}
+
+function joinToGroup() {
+  useForm({}).post(route('group.join.users', props.group.slug))
 }
 </script>
 
@@ -141,9 +146,23 @@ function submitThumbnailImage(){
           <div class="flex justify-between items-center flex-1 p-4">
             <h2 class="font-bold text-lg">{{ group.name }}</h2>
 
-            <PrimaryButton v-if="isCurrentUserAdmin" @click="showInviteUserModal = true">Invite Users</PrimaryButton>
-            <PrimaryButton v-if="!group.role && group.auto_approval">Join to Group</PrimaryButton>
-            <PrimaryButton v-if="!group.role && !group.auto_approval">Request to join</PrimaryButton>
+            <PrimaryButton v-if="!authUser"
+                           :href="route('login')">
+              Login to join to this group
+            </PrimaryButton>
+
+            <PrimaryButton v-if="isCurrentUserAdmin"
+                           @click="showInviteUserModal = true">
+              Invite Users
+            </PrimaryButton>
+            <PrimaryButton v-if="authUser && !group.role && group.auto_approval"
+                           @click="joinToGroup">
+              Join to Group
+            </PrimaryButton>
+            <PrimaryButton v-if="authUser && !group.role && !group.auto_approval"
+                           @click="joinToGroup">
+              Request to join
+            </PrimaryButton>
           </div>
         </div>
       </div>
