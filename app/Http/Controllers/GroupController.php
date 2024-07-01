@@ -6,12 +6,14 @@ use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
 use App\Http\Requests\InviteUsersRequest;
 use App\Http\Resources\GroupResource;
+use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Models\GroupUser;
 use App\Notifications\InvitationApproved;
 use App\Notifications\InvitationInGroup;
+use App\Notifications\RequestApproved;
 use App\Notifications\RequestToJoinGroup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,7 +22,6 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
 {
@@ -30,9 +31,15 @@ class GroupController extends Controller
     public function profile(Group $group)
     {
         $group->load('currentUserGroup');
+
+        $users = $group->approvedUsers()->orderBy('name')->get();
+        $requests = $group->pendingUsers()->orderBy('name')->get();
+
         return Inertia::render('Group/View', [
             'success' => session('success'),
-            'group' => new GroupResource($group)
+            'group' => new GroupResource($group),
+            'users' => UserResource::collection($users),
+            'requests' => UserResource::collection($requests)
         ]);
     }
 
@@ -103,7 +110,7 @@ class GroupController extends Controller
             if ($group->cover_path) {
                 Storage::disk('public')->delete($group->cover_path);
             }
-            $path = $cover->store('group-'.$group->id, 'public');
+            $path = $cover->store('group-' . $group->id, 'public');
             $group->update(['cover_path' => $path]);
             $success = 'Your Cover Image Was Updated.';
         }
@@ -112,7 +119,7 @@ class GroupController extends Controller
             if ($group->thumbnail_path) {
                 Storage::disk('public')->delete($group->thumbnail_path);
             }
-            $path = $thumbnail->store('group-'.$group->id, 'public');
+            $path = $thumbnail->store('group-' . $group->id, 'public');
             $group->update(['thumbnail_path' => $path]);
             $success = "Your Group's Thumbnail Image Was Updated.";
         }
@@ -159,17 +166,15 @@ class GroupController extends Controller
 
         $errorTitle = '';
 
-        if (!$groupUser){
+        if (!$groupUser) {
             $errorTitle = "The link is not valid";
-        }
-        elseif ($groupUser->token_used || $groupUser->status === GroupUserStatus::APPROVED->value){
+        } elseif ($groupUser->token_used || $groupUser->status === GroupUserStatus::APPROVED->value) {
             $errorTitle = "The link is already used";
-        }
-        elseif ($groupUser->token_expire_date < Carbon::now()){
+        } elseif ($groupUser->token_expire_date < Carbon::now()) {
             $errorTitle = "The link is expired";
         }
 
-        if ($errorTitle){
+        if ($errorTitle) {
             return \inertia('Error', ["title" => $errorTitle]);
         }
 
@@ -181,16 +186,16 @@ class GroupController extends Controller
 
         $adminUser->notify(new InvitationApproved($groupUser->group, $groupUser->user));
 
-        return redirect(route('group.profile', $groupUser->group))->with('success', 'You accepted to join to group "'.$groupUser->group->name.'"');
+        return redirect(route('group.profile', $groupUser->group))->with('success', 'You accepted to join to group "' . $groupUser->group->name . '"');
     }
 
     public function joinUsers(Group $group)
     {
         $user = \request()->user();
         $status = GroupUserStatus::APPROVED->value;
-        $successMessage = 'You Have Joined To Group "'.$group->name.'".';
+        $successMessage = 'You Have Joined To Group "' . $group->name . '".';
 
-        if (!$group->auto_approval){
+        if (!$group->auto_approval) {
             $status = GroupUserStatus::PENDING->value;
 
             Notification::send($group->adminUsers, new RequestToJoinGroup($group, $user));
@@ -206,5 +211,40 @@ class GroupController extends Controller
         ]);
 
         return back()->with('success', $successMessage);
+    }
+
+    public function approveRequests(Request $request, Group $group)
+    {
+        if (!$group->isAdmin(Auth::id())) {
+            return response("Permission Denied!", 403);
+        }
+
+        $data = $request->validate([
+            'user_id' => ['required'],
+            'action' => ['required']
+        ]);
+
+        $groupUser = GroupUser::where('user_id', $data['user_id'])
+            ->where('group_id', $group->id)
+            ->where('status', GroupUserStatus::PENDING->value)
+            ->first();
+
+        if ($groupUser){
+            $approved = false;
+            if ($data['action'] === "approve"){
+                $approved = true;
+                $groupUser->status = GroupUserStatus::APPROVED->value;
+            }else{
+                $groupUser->status = GroupUserStatus::REJECTED->value;
+            }
+            $groupUser->save();
+
+            $user = $groupUser->user;
+
+            $user->notify(new RequestApproved($groupUser->group, $user, $approved));
+            return back()->with('success', 'User "'.$groupUser->user->name.'" Was '. ($approved ? "Approved" : "Rejected"));
+        }
+
+        return back();
     }
 }

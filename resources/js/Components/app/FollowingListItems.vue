@@ -1,7 +1,7 @@
 <script setup>
 import TextInput from "../TextInput.vue"
 import {ref} from "vue";
-import FollowingItem from "./FollowingItem.vue"
+import UsersListItem from "./UsersListItem.vue"
 
 const searchKeywords = ref('')
 </script>
@@ -13,87 +13,7 @@ const searchKeywords = ref('')
       You dont have any friends yet.
     </div>
     <div v-else>
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="john doe"
-      />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      /><FollowingItem
-        image="https://picsum.photos/100"
-        title="john doe"
-    />
-
-      <FollowingItem
-          image="https://picsum.photos/100"
-          title="elon musk"
-      />
+<!--      <UsersListItem :user=""/>-->
     </div>
   </div>
 </template>

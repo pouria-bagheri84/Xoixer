@@ -129,7 +129,7 @@ function submitAvatarImage(){
         </div>
         <div class="flex">
           <div class="flex justify-center rounded-full items-center h-[128px] w-[128px] -mt-[64px] ml-[48px] relative group/avatar">
-            <img class="w-full h-full object-cover rounded-full" :src="avatarImageSrc || user.avatar_url || 'https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg'" alt="">
+            <img class="w-full h-full object-cover rounded-full" :src="avatarImageSrc || user.avatar_url || '/img/xoixer-logo.png'" alt="">
             <div v-if="isMyProfile" class="absolute left-0 bottom-0 top-0 right-0 group-hover/avatar:bg-gray-200/50 rounded-full">
               <button v-if="!avatarImageSrc" class="absolute left-0 top-0 right-0 bottom-0 bg-black/25 rounded-full flex justify-center items-center opacity-0 group-hover/avatar:opacity-100">
                 <CameraIcon class="h-16 w-16"/>
