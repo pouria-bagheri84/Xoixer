@@ -72,6 +72,7 @@ function cancelAvatarImage(){
 
 function submitCoverImage(){
   imagesForm.post('/profile/update-images', {
+    preserveScroll: true,
     onSuccess: (user)=> {
       showNotification.value = true
       cancelCoverImage()
@@ -84,6 +85,7 @@ function submitCoverImage(){
 
 function submitAvatarImage(){
   imagesForm.post('/profile/update-images', {
+    preserveScroll: true,
     onSuccess: (user)=> {
       showNotification.value = true
       cancelAvatarImage()

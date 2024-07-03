@@ -12,6 +12,7 @@ import PostUserHeader from './PostUserHeader.vue'
 import {useForm, usePage} from "@inertiajs/vue3";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
 import {isImage} from "@/helpers.js";
+import axiosClient from "@/axiosClient.js";
 
 const props = defineProps({
   post: {
@@ -88,6 +89,7 @@ function submit(){
       preserveScroll: true,
       onSuccess: ()=> {
         closeModal()
+        location.reload()
       },
       onError: (err)=>{
         processErrors(err)

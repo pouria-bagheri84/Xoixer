@@ -26,15 +26,6 @@ function showCreatePostModal() {
     <div @click="showCreatePostModal" class="py-2 px-3 border-2 border-gray-300 text-gray-600 text-lg focus:border-indigo-500 focus:ring-indigo-500 rounded-md  mb-3 w-full">
       click here to create new post
     </div>
-<!--    <div class="flex gap-2 justify-between">-->
-<!--      <button type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 relative">-->
-<!--        Attach Files-->
-<!--        <input type="file" class="absolute left-0 top-0 right-0 bottom-0 opacity-0">-->
-<!--      </button>-->
-<!--      <button @click="submit" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">-->
-<!--        Submit-->
-<!--      </button>-->
-<!--    </div>-->
 
     <PostModal :post="newPost" v-model="showModal"/>
   </div>

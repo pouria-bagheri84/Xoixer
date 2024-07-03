@@ -73,6 +73,7 @@ function cancelThumbnailImage(){
 
 function submitCoverImage(){
   imagesForm.post(route('group.update.images', props.group.slug), {
+    preserveScroll: true,
     onSuccess: ()=> {
       showNotification.value = true
       cancelCoverImage()
@@ -85,6 +86,7 @@ function submitCoverImage(){
 
 function submitThumbnailImage(){
   imagesForm.post(route('group.update.images', props.group.slug), {
+    preserveScroll: true,
     onSuccess: ()=> {
       showNotification.value = true
       cancelThumbnailImage()
@@ -96,21 +98,36 @@ function submitThumbnailImage(){
 }
 
 function joinToGroup() {
-  useForm({}).post(route('group.join.users', props.group.slug))
+  useForm({}).post(route('group.join.users', props.group.slug),{
+    preserveScroll: true
+  })
 }
 
 function approveUser(user) {
   useForm({
     user_id: user.id,
     action: 'approve'
-  }).post(route('group.approve.requests', props.group.slug))
+  }).post(route('group.approve.requests', props.group.slug)),{
+    preserveScroll: true
+  }
 }
 
 function rejectUser(user) {
   useForm({
     user_id: user.id,
     action: 'reject'
-  }).post(route('group.approve.requests', props.group.slug))
+  }).post(route('group.approve.requests', props.group.slug),{
+    preserveScroll: true
+  })
+}
+
+function onRoleChange(user, role) {
+  useForm({
+    user_id: user.id,
+    role: role
+  }).post(route('group.change.role', props.group.slug),{
+    preserveScroll: true
+  })
 }
 </script>
 
@@ -218,6 +235,9 @@ function rejectUser(user) {
                     v-for="user of users"
                     :user="user"
                     :key="user.id"
+                    :show-role-dropdown="isCurrentUserAdmin"
+                    :disable-role-dropdown="group.user_id === user.id"
+                    @role-change="onRoleChange"
                     class="rounded-lg shadow"/>
               </div>
             </TabPanel>

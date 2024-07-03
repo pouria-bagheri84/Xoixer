@@ -24,7 +24,6 @@ const props = defineProps({
 const emit = defineEmits(['commentCreate', 'commentDelete']);
 
 function startCommentEdit(comment) {
-  console.log(comment)
   editingComment.value = {
     id: comment.id,
     comment: comment.comment.replace(/<br\s*\/?>/gi, '\n') // <br />, <br > <br> <br/>, <br    />

@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/group/invite-users/{group:slug}', [GroupController::class, 'inviteUsers'])->name('group.invite.users');
     Route::post('/group/join-users/{group:slug}', [GroupController::class, 'joinUsers'])->name('group.join.users');
     Route::post('/group/approve-request/{group:slug}', [GroupController::class, 'approveRequests'])->name('group.approve.requests');
+    Route::post('/group/change-role/{group:slug}', [GroupController::class, 'changeRole'])->name('group.change.role');
 });
     Route::get('/group/approve-invitation/{token}', [GroupController::class, 'approveInvitation'])->name('group.approve.invitation');
 

@@ -44,7 +44,16 @@ class Group extends Model
 
     public function isAdmin($userID): bool
     {
-        return $this->currentUserGroup->user_id == $userID;
+        return GroupUser::query()
+            ->where('user_id', $userID)
+            ->where('group_id', $this->id)
+            ->where('role', GroupUserRole::ADMIN->value)
+            ->exists();
+    }
+
+    public function isOwner($userID): bool
+    {
+        return $this->user_id == $userID;
     }
 
     public function adminUsers(): BelongsToMany
