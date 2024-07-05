@@ -4,9 +4,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostControler;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -37,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/group/join-users/{group:slug}', [GroupController::class, 'joinUsers'])->name('group.join.users');
     Route::post('/group/approve-request/{group:slug}', [GroupController::class, 'approveRequests'])->name('group.approve.requests');
     Route::post('/group/change-role/{group:slug}', [GroupController::class, 'changeRole'])->name('group.change.role');
+    Route::put('/group/update/{group:slug}', [GroupController::class, 'update'])->name('group.update');
 });
     Route::get('/group/approve-invitation/{token}', [GroupController::class, 'approveInvitation'])->name('group.approve.invitation');
 

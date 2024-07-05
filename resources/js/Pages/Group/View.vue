@@ -9,11 +9,18 @@ import PrimaryButton from "../../Components/PrimaryButton.vue"
 import InviteUserModal from "./InviteUserModal.vue"
 import UsersListItem from "@/Components/app/UsersListItem.vue";
 import TextInput from "../../Components/TextInput.vue"
+import GroupForm from "@/Components/app/GroupForm.vue";
 
 
 const imagesForm = useForm({
   thumbnail: null,
   cover: null,
+})
+
+const aboutForm = useForm({
+  name: usePage().props.group.name,
+  auto_approval: !!parseInt(usePage().props.group.auto_approval),
+  about: usePage().props.group.about
 })
 
 let showNotification = ref(true);
@@ -129,6 +136,11 @@ function onRoleChange(user, role) {
     preserveScroll: true
   })
 }
+function updateGroup(){
+  aboutForm.put(route('group.update', props.group.slug), {
+    preserveScroll: true
+  })
+}
 </script>
 
 <template>
@@ -222,6 +234,9 @@ function onRoleChange(user, role) {
             <Tab v-slot="{ selected }" as="template">
               <TabItem text="Photos" :selected="selected"/>
             </Tab>
+            <Tab v-if="isCurrentUserAdmin" v-slot="{ selected }" as="template">
+              <TabItem text="About" :selected="selected"/>
+            </Tab>
           </TabList>
 
           <TabPanels class="mt-2">
@@ -258,6 +273,12 @@ function onRoleChange(user, role) {
             </TabPanel>
             <TabPanel key="followers" class="bg-white p-3 shadow">
               Photos Content
+            </TabPanel>
+            <TabPanel key="followers" class="bg-white p-3 shadow">
+              <GroupForm :form="aboutForm"/>
+              <PrimaryButton @click="updateGroup">
+                submit
+              </PrimaryButton>
             </TabPanel>
           </TabPanels>
         </TabGroup>

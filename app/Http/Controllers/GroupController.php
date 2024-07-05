@@ -77,20 +77,15 @@ class GroupController extends Controller
         return response(new GroupResource($group), 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Group $group)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateGroupRequest $request, Group $group)
     {
-        //
+        $group->update($request->validated());
+
+        return back()->with('success', "Group Was Updated");
     }
 
     /**

@@ -9,10 +9,8 @@ import {
   DialogTitle,
 } from '@headlessui/vue'
 import {useForm} from "@inertiajs/vue3";
-import TextInput from "@/Components/TextInput.vue";
-import Checkbox from "@/Components/Checkbox.vue";
-import InputTextarea from "@/Components/InputTextarea.vue";
 import axiosClient from "@/axiosClient.js";
+import GroupForm from "@/Components/app/GroupForm.vue";
 
 
 const props = defineProps({
@@ -87,30 +85,7 @@ function submit() {
                 </button>
               </DialogTitle>
               <div class="p-3 mt-2">
-                <div class="mb-3">
-                  Group Name
-                  <TextInput
-                      type="text"
-                      class="mt-1 block w-full"
-                      v-model="form.name"
-                      required
-                      autofocus
-                  />
-                </div>
-
-                <div class="mb-3">
-                  <label>
-                    <Checkbox name="remember" v-model:checked="form.auto_approval" />
-                    Enable Auto Approval
-                  </label>
-                </div>
-
-                <div class="mb-3">
-                  <label>
-                    About Group
-                  </label>
-                  <InputTextarea v-model="form.about" class="w-full"></InputTextarea>
-                </div>
+                <GroupForm :form="form"/>
               </div>
 
               <div class="flex justify-end gap-2 py-2 px-3">
