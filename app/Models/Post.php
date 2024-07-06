@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +17,8 @@ class Post extends Model
 
     protected $fillable = [
         'body',
-        'user_id'
+        'user_id',
+        'group_id'
     ];
 
 
@@ -43,5 +45,20 @@ class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class)->latest()->take(5);
+    }
+
+    public static function postsForTimeline($userId): Builder
+    {
+        return Post::query() // SELECT * FROM posts
+        ->withCount('reactions') // SELECT COUNT(*) from reactions
+        ->with([
+            'comments' => function ($query) {
+                $query->withCount('reactions'); // SELECT * FROM comments WHERE post_id IN (1, 2, 3...)
+                // SELECT COUNT(*) from reactions
+            },
+            'reactions' => function ($query) use ($userId) {
+                $query->where('user_id', $userId); // SELECT * from reactions WHERE user_id = ?
+            }])
+            ->latest();
     }
 }

@@ -1,30 +1,38 @@
 <script setup>
 import PostItem from "@/Components/app/PostItem.vue";
-import PostModal from "./PostModal.vue"
-import {onMounted, onUpdated, ref} from "vue";
+import PostModal from "@/Components/app/PostModal.vue";
+import {onMounted, ref, watch} from "vue";
 import {usePage} from "@inertiajs/vue3";
 import AttachmentPreviewPostModal from "@/Components/app/AttachmentPreviewPostModal.vue";
 import axiosClient from "@/axiosClient.js";
-
-const props = defineProps({
-  posts: Array
-})
+const page = usePage();
+const authUser = usePage().props.auth.user;
 const showEditModal = ref(false)
 const showAttachmentsModal = ref(false)
 const editPost = ref({})
 const previewAttachmentsPost = ref({})
-const authUser = usePage().props.auth.user;
 const loadMoreIntersect = ref(null)
-const page = usePage();
 
 const allPosts = ref({
-  data: page.props.posts.data,
-  next: page.props.posts.links.next
+  data: [],
+  next: null
+})
+const props = defineProps({
+  posts: Array
 })
 
-function openEditModal(post){
-  editPost.value = post
-  showEditModal.value = true
+watch(() => page.props.posts, () => {
+  if (page.props.posts) {
+    allPosts.value = {
+      data: page.props.posts.data,
+      next: page.props.posts.links.next
+    }
+  }
+}, {deep: true, immediate: true})
+
+function openEditModal(post) {
+  editPost.value = post;
+  showEditModal.value = true;
 }
 
 function openAttachmentPreviewModal(post, index) {
@@ -44,7 +52,7 @@ function onModalHide() {
 }
 
 function loadMore() {
-  if (!allPosts.value.next){
+  if (!allPosts.value.next) {
     return;
   }
 

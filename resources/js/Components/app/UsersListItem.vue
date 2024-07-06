@@ -43,7 +43,7 @@ defineEmits(['approve', 'reject', 'roleChange'])
           </button>
         </div>
 
-        <div v-if="showRoleDropdown" class="flex gap-1">
+        <div v-else-if="showRoleDropdown" class="flex gap-1">
           <div class="mt-2">
             <select
                 class="rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6"
@@ -53,6 +53,12 @@ defineEmits(['approve', 'reject', 'roleChange'])
               <option :selected="user.role === 'user'">user</option>
             </select>
           </div>
+        </div>
+        <div v-else>
+          <span v-if="user.role === 'admin'"
+                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+            {{"admin"}}
+          </span>
         </div>
       </div>
     </div>

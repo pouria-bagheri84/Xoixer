@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Enums\GroupUserStatus;
+use App\Models\GroupUser;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\File;
 
 class StorePostRequest extends FormRequest
@@ -14,6 +17,7 @@ class StorePostRequest extends FormRequest
         'doc', 'docx', 'pdf', 'csv', 'xls', 'xlsx',
         'zip'
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -34,11 +38,11 @@ class StorePostRequest extends FormRequest
             'attachments' => [
                 'array',
                 'max:50',
-                function ($attribute, $value, $fail){
+                function ($attribute, $value, $fail) {
                     $totalSize = collect($value)->sum(function (UploadedFile $file) {
                         return $file->getSize();
                     });
-                    if ($totalSize > 250000000){    // 250 MB
+                    if ($totalSize > 250000000) {    // 250 MB
                         $fail('The total size of all files must not exceed 250MB.');
                     }
                 },
@@ -47,7 +51,18 @@ class StorePostRequest extends FormRequest
                 'file',
                 File::types(self::$extentions),
             ],
-            'user_id' => ['numeric']
+            'user_id' => ['numeric'],
+            'group_id' => ['nullable', 'exists:groups,id', function ($attribute, $value, \Closure $fail) {
+                $groupUser = GroupUser::where('user_id', Auth::id())
+                    ->where('group_id', $value)
+                    ->where('status', GroupUserStatus::APPROVED->value)
+                    ->exists();
+
+                if (!$groupUser) {
+                    $fail('You don\'t have permission to create post in this group');
+                }
+
+            }]
         ];
     }
 

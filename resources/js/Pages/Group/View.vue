@@ -10,6 +10,8 @@ import InviteUserModal from "./InviteUserModal.vue"
 import UsersListItem from "@/Components/app/UsersListItem.vue";
 import TextInput from "../../Components/TextInput.vue"
 import GroupForm from "@/Components/app/GroupForm.vue";
+import PostList from "@/Components/app/PostList.vue";
+import CreatePost from "@/Components/app/CreatePost.vue";
 
 
 const imagesForm = useForm({
@@ -33,6 +35,7 @@ const props = defineProps({
   group: {
     type: Object,
   },
+  posts: Object,
   errors: String,
   users: Array,
   requests: Array
@@ -240,10 +243,16 @@ function updateGroup(){
           </TabList>
 
           <TabPanels class="mt-2">
-            <TabPanel key="followers" class="bg-white p-3 shadow">
-              Posts Content
+            <TabPanel>
+              <template v-if="posts">
+                <CreatePost :group="group"/>
+                <PostList :posts="posts.data" class="flex-1"/>
+              </template>
+              <div v-else class="py-8 text-center">
+                You don't have permission to view these posts.
+              </div>
             </TabPanel>
-            <TabPanel v-if="isJoinedToGroup" key="followers">
+            <TabPanel v-if="isJoinedToGroup">
               <TextInput :model-value="searchKeywords" placeholder="Type to search..." class="w-full mb-4"/>
               <div class="grid grid-cols-2 gap-3">
                 <UsersListItem
@@ -256,7 +265,7 @@ function updateGroup(){
                     class="rounded-lg shadow"/>
               </div>
             </TabPanel>
-            <TabPanel v-if="isCurrentUserAdmin" key="followers">
+            <TabPanel v-if="isCurrentUserAdmin">
               <div v-if="requests.length" class="grid grid-cols-2 gap-3">
                 <UsersListItem
                     v-for="user of requests"
@@ -271,10 +280,10 @@ function updateGroup(){
                 There Are Not Pending Requests
               </div>
             </TabPanel>
-            <TabPanel key="followers" class="bg-white p-3 shadow">
+            <TabPanel class="bg-white p-3 shadow">
               Photos Content
             </TabPanel>
-            <TabPanel key="followers" class="bg-white p-3 shadow">
+            <TabPanel class="bg-white p-3 shadow">
               <GroupForm :form="aboutForm"/>
               <PrimaryButton @click="updateGroup">
                 submit

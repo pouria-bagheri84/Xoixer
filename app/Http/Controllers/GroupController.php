@@ -7,11 +7,13 @@ use App\Http\Enums\GroupUserStatus;
 use App\Http\Requests\InviteUsersRequest;
 use App\Http\Resources\GroupResource;
 use App\Http\Resources\GroupUserResource;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Models\GroupUser;
+use App\Models\Post;
 use App\Models\User;
 use App\Notifications\InvitationApproved;
 use App\Notifications\InvitationInGroup;
@@ -32,13 +34,44 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function profile(Group $group)
+    public function profile(Request $request, Group $group): \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Inertia\Response
     {
         $group->load('currentUserGroup');
 
+        $userId = Auth::id();
+
+//        $posts = Post::postsForTimeline($userId)
+//            ->where('group_id', $group->id)
+//            ->paginate(5);
+//
+//        $posts = PostResource::collection($posts);
+//        if ($request->wantsJson()){
+//            return $posts;
+//        }
+
+        if ($group->hasApprovedUser($userId)) {
+            $posts = Post::postsForTimeline($userId)
+                ->where('group_id', $group->id)
+                ->paginate(5);
+            $posts = PostResource::collection($posts);
+        } else {
+            return Inertia::render('Group/View', [
+                'success' => session('success'),
+                'group' => new GroupResource($group),
+                'posts' => null,
+                'users' => [],
+                'requests' => []
+            ]);
+        }
+
+        if ($request->wantsJson()) {
+            return $posts;
+        }
+
+
         $users = User::query()
             ->select(['users.*', 'gu.role', 'gu.status', 'gu.group_id'])
-            ->join('group_users AS gu', 'gu.user_id', '=' , 'users.id')
+            ->join('group_users AS gu', 'gu.user_id', 'users.id')
             ->orderBy('users.name')
             ->where('group_id', $group->id)
             ->get();
@@ -47,6 +80,7 @@ class GroupController extends Controller
         return Inertia::render('Group/View', [
             'success' => session('success'),
             'group' => new GroupResource($group),
+            'posts' => $posts,
             'users' => GroupUserResource::collection($users),
             'requests' => UserResource::collection($requests)
         ]);
@@ -55,7 +89,7 @@ class GroupController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreGroupRequest $request)
+    public function store(StoreGroupRequest $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $data = $request->validated();
         $data['user_id'] = Auth::id();
@@ -81,7 +115,7 @@ class GroupController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateGroupRequest $request, Group $group)
+    public function update(UpdateGroupRequest $request, Group $group): \Illuminate\Http\RedirectResponse
     {
         $group->update($request->validated());
 
@@ -96,7 +130,7 @@ class GroupController extends Controller
         //
     }
 
-    public function updateImage(Request $request, Group $group)
+    public function updateImage(Request $request, Group $group): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Routing\ResponseFactory
     {
         if (!$group->isAdmin(Auth::id())) {
             return response("Permission Denied!", 403);
@@ -132,7 +166,7 @@ class GroupController extends Controller
         return back()->with('success', $success);
     }
 
-    public function inviteUsers(InviteUsersRequest $request, Group $group)
+    public function inviteUsers(InviteUsersRequest $request, Group $group): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validated();
 
@@ -162,7 +196,7 @@ class GroupController extends Controller
         return back()->with('success', "User Was Invited To Join To Group.");
     }
 
-    public function approveInvitation(string $token)
+    public function approveInvitation(string $token): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Inertia\Response|\Inertia\ResponseFactory|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         $groupUser = GroupUser::query()
             ->where('token', $token)
@@ -193,7 +227,7 @@ class GroupController extends Controller
         return redirect(route('group.profile', $groupUser->group))->with('success', 'You accepted to join to group "' . $groupUser->group->name . '"');
     }
 
-    public function joinUsers(Group $group)
+    public function joinUsers(Group $group): \Illuminate\Http\RedirectResponse
     {
         $user = \request()->user();
         $status = GroupUserStatus::APPROVED->value;
@@ -217,7 +251,7 @@ class GroupController extends Controller
         return back()->with('success', $successMessage);
     }
 
-    public function approveRequests(Request $request, Group $group)
+    public function approveRequests(Request $request, Group $group): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         if (!$group->isAdmin(Auth::id())) {
             return response("Permission Denied!", 403);
@@ -246,13 +280,13 @@ class GroupController extends Controller
             $user = $groupUser->user;
 
             $user->notify(new RequestApproved($groupUser->group, $user, $approved));
-            return back()->with('success', 'User "'.$groupUser->user->name.'" Was '. ($approved ? "Approved" : "Rejected"));
+            return back()->with('success', 'User "' . $user->name . '" was ' . ( $approved ? 'approved' : 'rejected' ));
         }
 
         return back();
     }
 
-    public function changeRole(Request $request, Group $group)
+    public function changeRole(Request $request, Group $group): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         if (!$group->isAdmin(Auth::id())) {
             return response("Permission Denied!", 403);
