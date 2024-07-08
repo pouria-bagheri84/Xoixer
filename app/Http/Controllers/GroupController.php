@@ -19,6 +19,7 @@ use App\Notifications\InvitationApproved;
 use App\Notifications\InvitationInGroup;
 use App\Notifications\RequestApproved;
 use App\Notifications\RequestToJoinGroup;
+use App\Notifications\UserRemovedFromGroup;
 use App\Notifications\UserRoleChanged;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -39,15 +40,6 @@ class GroupController extends Controller
         $group->load('currentUserGroup');
 
         $userId = Auth::id();
-
-//        $posts = Post::postsForTimeline($userId)
-//            ->where('group_id', $group->id)
-//            ->paginate(5);
-//
-//        $posts = PostResource::collection($posts);
-//        if ($request->wantsJson()){
-//            return $posts;
-//        }
 
         if ($group->hasApprovedUser($userId)) {
             $posts = Post::postsForTimeline($userId)
@@ -313,6 +305,34 @@ class GroupController extends Controller
             $groupUser->user->notify(new UserRoleChanged($group, $data['role']));
 
             return back()->with('success', 'User "'.$groupUser->user->name.'" Is '.($data['role'] === "admin" ? "Admin" : "User").' From Now');
+        }
+
+        return back();
+    }
+
+    public function removeUser(Request $request, Group $group)
+    {
+        if (!$group->isAdmin(Auth::id())){
+            return response("Permission Denied!", 403);
+        }
+
+        $data = $request->validate([
+            'user_id' => ['required']
+        ]);
+
+        $user_id = $data['user_id'];
+        if ($group->isOwner($user_id)){
+            return response('The Owner Of The Group Cannot Be Removed', 403);
+        }
+
+        $groupUser = GroupUser::where('user_id', $user_id)
+            ->where('group_id', $group->id)
+            ->first();
+
+        if ($groupUser){
+            $user = $groupUser->user;
+            $groupUser->delete();
+            $user->notify(new UserRemovedFromGroup($group));
         }
 
         return back();

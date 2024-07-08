@@ -144,6 +144,18 @@ function updateGroup(){
     preserveScroll: true
   })
 }
+
+function deleteUser(user) {
+  if (!window.confirm(`Are You Sure You Want Remove User "${user.name}" From This Group?`)){
+    return false;
+  }
+
+  useForm({
+    user_id: user.id,
+  }).delete(route('group.remove.user', props.group.slug),{
+    preserveScroll: true
+  })
+}
 </script>
 
 <template>
@@ -262,6 +274,7 @@ function updateGroup(){
                     :show-role-dropdown="isCurrentUserAdmin"
                     :disable-role-dropdown="group.user_id === user.id"
                     @role-change="onRoleChange"
+                    @delete="deleteUser"
                     class="rounded-lg shadow"/>
               </div>
             </TabPanel>
