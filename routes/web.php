@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/post/{post}', [PostController::class ,'destroy'])->name('post.destroy');
     Route::get('/post/download/{attachment}', [PostController::class, 'downloadAttachment'])->name('post.download');
     Route::post('/post/{post}/reaction', [PostController::class, 'postReaction'])->name('post.reaction');
+    Route::get('/post/{post}', [PostController::class, 'view'])->name('post.view');
 
     Route::post('/post/{post}/comment', [PostController::class, 'postComment'])->name('comment.create');
     Route::delete('/comment/{comment}', [PostController::class, 'deleteComment'])->name('comment.delete');

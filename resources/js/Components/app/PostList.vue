@@ -5,6 +5,7 @@ import {onMounted, ref, watch} from "vue";
 import {usePage} from "@inertiajs/vue3";
 import AttachmentPreviewPostModal from "@/Components/app/AttachmentPreviewPostModal.vue";
 import axiosClient from "@/axiosClient.js";
+
 const page = usePage();
 const authUser = usePage().props.auth.user;
 const showEditModal = ref(false)

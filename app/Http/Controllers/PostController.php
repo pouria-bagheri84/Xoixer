@@ -7,6 +7,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\PostResource;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostAttachment;
@@ -29,10 +30,25 @@ use function Pest\Laravel\delete;
 
 class PostController extends Controller
 {
+    public function view(Post $post)
+    {
+        $post->loadCount('reactions');
+        $post->load([
+            'comments' => function ($query) {
+                $query->withCount('reactions'); // SELECT * FROM comments WHERE post_id IN (1, 2, 3...)
+                // SELECT COUNT(*) from reactions
+            },
+        ]);
+
+        return inertia('Post/View', [
+            'post' => new PostResource($post)
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validated();
         $user = $request->user();
@@ -76,7 +92,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post): \Illuminate\Http\RedirectResponse
     {
         $user = $request->user();
 
@@ -127,7 +143,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $id = Auth::id();
 
@@ -143,12 +159,12 @@ class PostController extends Controller
         return response("You don't have permission to delete this post", 403);
     }
 
-    public function downloadAttachment(PostAttachment $attachment)
+    public function downloadAttachment(PostAttachment $attachment): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
     }
 
-    public function postReaction(Request $request, Post $post)
+    public function postReaction(Request $request, Post $post): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $data = $request->validate([
             'reaction' => [Rule::enum(ReactionEnum::class)]
@@ -183,7 +199,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function postComment(Post $post, Request $request)
+    public function postComment(Post $post, Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $data = $request->validate([
             'comment' => ['required'],
@@ -198,12 +214,12 @@ class PostController extends Controller
         ]);
 
         $post = $comment->post;
-        $post->user->notify(new CommentCreated($comment));
+        $post->user->notify(new CommentCreated($comment, $post));
 
         return response(new CommentResource($comment), 201);
     }
 
-    public function deleteComment(Comment $comment)
+    public function deleteComment(Comment $comment): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $post = $comment->post;
         $id = Auth::id();
@@ -221,7 +237,7 @@ class PostController extends Controller
         return response('You Don\'t Have Permission To Delete This Comment...', 403);
     }
 
-    public function updateComment(UpdateCommentRequest $request, Comment $comment)
+    public function updateComment(UpdateCommentRequest $request, Comment $comment): CommentResource
     {
         $data = $request->validated();
 
@@ -232,7 +248,7 @@ class PostController extends Controller
         return new CommentResource($comment);
     }
 
-    public function commentReaction(Request $request, Comment $comment)
+    public function commentReaction(Request $request, Comment $comment): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         $data = $request->validate([
             'reaction' => [Rule::enum(ReactionEnum::class)]
