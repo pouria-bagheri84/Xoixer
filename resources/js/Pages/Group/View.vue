@@ -202,8 +202,7 @@ function deleteUser(user) {
             </div>
           </div>
           <div class="flex">
-            <div
-                class="flex justify-center rounded-full items-center h-[128px] w-[128px] -mt-[64px] ml-[48px] relative group/thumbnail">
+            <div class="flex justify-center rounded-full items-center h-[128px] w-[128px] -mt-[64px] ml-[48px] relative group/thumbnail">
               <img class="w-full h-full object-cover rounded-full"
                    :src="thumbnailImageSrc || group.thumbnail_url || 'https://sm.ign.com/ign_nordic/cover/a/thumbnail-gen/thumbnail-generations_prsz.jpg'"
                    alt="">
