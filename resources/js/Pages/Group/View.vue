@@ -173,7 +173,7 @@ function deleteUser(user) {
       </div>
       <div class="p-4">
         <div class="group relative bg-white">
-          <img class="w-full h-[200px] object-cover" :src="coverImageSrc || group.cover_url || '/img/cover.jpg'" alt="">
+          <img class="w-full h-[200px] object-cover rounded-lg" :src="coverImageSrc || group.cover_url || '/img/cover.jpg'" alt="">
           <div v-if="isCurrentUserAdmin" class="absolute top-2 right-2">
             <button v-if="!coverImageSrc"
                     class="py-1 px-2 bg-gray-50 hover:bg-gray-100 text-gray-500 text-xs flex items-center rounded opacity-0 transition-all group-hover:opacity-100">
@@ -276,7 +276,10 @@ function deleteUser(user) {
             <TabPanel>
               <template v-if="posts">
                 <CreatePost :group="group"/>
-                <PostList :posts="posts.data" class="flex-1"/>
+                <PostList v-if="posts.data.length" :posts="posts.data" class="flex-1"/>
+                <div v-else class="py-8 text-center">
+                  There are no posts in this group. Be the first and create it.
+                </div>
               </template>
               <div v-else class="py-8 text-center">
                 You don't have permission to view these posts.
@@ -321,7 +324,7 @@ function deleteUser(user) {
                   submit
                 </PrimaryButton>
               </template>
-              <div v-else v-html="group.about"></div>
+              <div v-else class="ck-content-output" v-html="group.about"></div>
             </TabPanel>
           </TabPanels>
         </TabGroup>

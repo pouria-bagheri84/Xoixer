@@ -60,7 +60,11 @@ defineEmits(['approve', 'reject', 'roleChange', 'delete'])
           </div>
         </div>
         <div v-else>
-          <span v-if="user.role === 'admin'"
+          <span v-if="disableRoleDropdown"
+                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+            {{"owner"}}
+          </span>
+          <span v-else-if="user.role === 'admin'"
                 class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
             {{"admin"}}
           </span>

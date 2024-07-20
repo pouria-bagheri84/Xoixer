@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/@/{user:username}', [ProfileController::class, 'index'])->name('profile');
+Route::get('/@'.'{user:username}', [ProfileController::class, 'index'])->name('profile');
 
 Route::get('/g%/{group:slug}', [GroupController::class, 'profile'])->name('group.profile');
 
