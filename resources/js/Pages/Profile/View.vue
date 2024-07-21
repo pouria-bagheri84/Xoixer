@@ -12,6 +12,7 @@ import CreatePost from "@/Components/app/CreatePost.vue";
 import PostList from "@/Components/app/PostList.vue";
 import UserListItem from "@/Components/app/UsersListItem.vue";
 import TextInput from "@/Components/TextInput.vue";
+import TabPhotos from "@/Pages/Profile/TabPhotos.vue";
 
 const imagesForm = useForm({
   avatar: null,
@@ -37,6 +38,7 @@ const props = defineProps({
   posts: Object,
   followers: Array,
   followings: Array,
+  photos: Array,
   isCurrentUserFollower: Boolean,
   followerCount: Number,
   errors: String
@@ -209,22 +211,22 @@ function followUser() {
           </div>
         </div>
       </div>
-      <div class="border-t p-4 pt-0">
+      <div class="p-4">
         <TabGroup>
-          <TabList class="flex bg-white">
-            <Tab v-slot="{ selected }" as="template">
+          <TabList class="flex bg-white rounded-lg shadow">
+            <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Posts" :selected="selected"/>
             </Tab>
-            <Tab v-slot="{ selected }" as="template">
+            <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Followers" :selected="selected"/>
             </Tab>
-            <Tab v-slot="{ selected }" as="template">
+            <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Followings" :selected="selected"/>
             </Tab>
-            <Tab v-slot="{ selected }" as="template">
+            <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Photos" :selected="selected"/>
             </Tab>
-            <Tab v-if="isMyProfile" v-slot="{ selected }" as="template">
+            <Tab v-if="isMyProfile" v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="My Profile" :selected="selected"/>
             </Tab>
           </TabList>
@@ -273,7 +275,7 @@ function followUser() {
               </div>
             </TabPanel>
             <TabPanel>
-              Photos
+              <TabPhotos :photos="photos"/>
             </TabPanel>
             <TabPanel v-if="isMyProfile">
               <Edit :must-verify-email="mustVerifyEmail" :status="status"/>

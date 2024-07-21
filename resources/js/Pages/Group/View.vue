@@ -12,6 +12,7 @@ import TextInput from "../../Components/TextInput.vue"
 import GroupForm from "@/Components/app/GroupForm.vue";
 import PostList from "@/Components/app/PostList.vue";
 import CreatePost from "@/Components/app/CreatePost.vue";
+import TabPhotos from "@/Pages/Profile/TabPhotos.vue"
 
 
 const imagesForm = useForm({
@@ -38,7 +39,8 @@ const props = defineProps({
   posts: Object,
   errors: String,
   users: Array,
-  requests: Array
+  requests: Array,
+  photos: Array
 });
 
 const isCurrentUserAdmin = computed(() => props.group.role === "admin")
@@ -252,22 +254,22 @@ function deleteUser(user) {
         </div>
       </div>
 
-      <div class="border-t p-4 pt-0">
+      <div class="p-4">
         <TabGroup>
-          <TabList class="flex bg-white">
-            <Tab v-slot="{ selected }" as="template">
+          <TabList class="flex bg-white rounded-lg shadow">
+            <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Posts" :selected="selected"/>
             </Tab>
-            <Tab v-if="isJoinedToGroup" v-slot="{ selected }" as="template">
+            <Tab v-if="isJoinedToGroup" v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Users" :selected="selected"/>
             </Tab>
-            <Tab v-if="isCurrentUserAdmin" v-slot="{ selected }" as="template">
+            <Tab v-if="isCurrentUserAdmin" v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Pending Requests" :selected="selected"/>
             </Tab>
-            <Tab v-slot="{ selected }" as="template">
+            <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Photos" :selected="selected"/>
             </Tab>
-            <Tab v-slot="{ selected }" as="template">
+            <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="About" :selected="selected"/>
             </Tab>
           </TabList>
@@ -314,8 +316,8 @@ function deleteUser(user) {
                 There Are Not Pending Requests
               </div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow">
-              Photos Content
+            <TabPanel class="bg-white p-3 shadow rounded-lg">
+              <TabPhotos :photos="photos"/>
             </TabPanel>
             <TabPanel class="bg-white p-3 shadow">
               <template v-if="isCurrentUserAdmin">
