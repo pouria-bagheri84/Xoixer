@@ -18,14 +18,14 @@ const status = ref('')
         <div class="flex justify-between">
           <h3 class="font-bold text-lg">{{ group.name }}</h3>
 
-          <span :class="{'bg-green-50 ring-green-600/20 text-green-700 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset' : status==='admin', 'bg-yellow-50 ring-yellow-600/20 text-yellow-700 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset': status === 'not approved'}"
+          <span :class="{'bg-green-50 ring-green-600/20 text-green-700 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset' : status === 'admin', 'bg-yellow-50 ring-yellow-600/20 text-yellow-700 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset': status === 'not approved'}"
                 v-if="group.status === 'approved' ? (group.role === 'admin' ? status = group.role : '') : status = 'not approved'">
             {{status}}
           </span>
 
 <!--          {{ group.status === "approved" ? (group.role === "admin" ? group.role : "") : "not approved" }}-->
         </div>
-        <div class="text-xs text-gray-500" v-html="group.description"></div>
+<!--        <div class="text-xs text-gray-500" v-html="group.description"></div>-->
       </div>
     </Link>
   </div>

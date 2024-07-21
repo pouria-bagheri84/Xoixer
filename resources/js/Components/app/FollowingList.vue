@@ -2,6 +2,9 @@
 import FollowingListItems from "@/Components/app/FollowingListItems.vue";
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 
+defineProps({
+  users: Array
+})
 </script>
 
 
@@ -19,14 +22,14 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
         </DisclosureButton>
 
         <DisclosurePanel>
-          <FollowingListItems/>
+          <FollowingListItems :users="users"/>
         </DisclosurePanel>
       </Disclosure>
     </div>
 
     <div class="lg:flex flex-col hidden overflow-hidden h-full">
       <h2 class="text-xl font-bold">My Following</h2>
-      <FollowingListItems />
+      <FollowingListItems :users="users"/>
     </div>
   </div>
 </template>
