@@ -8,12 +8,27 @@ import ReadMoreReadLess from './ReadMoreReadLess.vue'
 import EditDeleteDropdown from './EditDeleteDropdown.vue'
 import PostAttachments from "@/Components/app/PostAttachments.vue";
 import CommentList from "@/Components/app/CommentList.vue";
+import {computed} from "vue";
 
 const props = defineProps({
   post: Object
 })
 
 const emit = defineEmits(['editClick', 'attachmentClick'])
+
+const postBody = computed(()=>
+  props.post.body.replace(
+      /(#\w+)(?![^<]*<\/a>)/g,
+      (match, group)=>{
+        const encodedGroup = encodeURIComponent(group);
+        return  `
+                <a href="/search/${encodedGroup}"
+                class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium ring-1 ring-inset ring-blue-600/20"
+                >${group}</a>
+                `
+      }
+  )
+)
 
 function openEditModal(){
   emit('editClick', props.post)
@@ -52,8 +67,8 @@ function sendPostReaction() {
                           @edit="openEditModal"
                           @delete="deletePost"/>
     </div>
-    <div>
-      <ReadMoreReadLess :content="post.body" />
+    <div class="mb-3">
+      <ReadMoreReadLess :content="postBody" />
     </div>
     <div class="grid gap-3 mb-4" :class="[post.attachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2']">
       <PostAttachments :attachments="post.attachments" @attachmentsClick="openAttachment"/>
