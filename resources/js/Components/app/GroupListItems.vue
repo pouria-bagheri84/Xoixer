@@ -26,7 +26,7 @@ function onGroupCreate(group) {
       You are not joined to any groups
     </div>
     <div v-else>
-      <GroupItem v-for="group of groups" :group="group"/>
+      <GroupItem v-for="group of groups" :group="group" class="mb-4"/>
     </div>
   </div>
   <GroupModal v-model="showNewGroupModal" @create="onGroupCreate"/>
