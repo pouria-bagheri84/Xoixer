@@ -1,6 +1,6 @@
 <script setup>
-import { ArrowDownTrayIcon, PaperClipIcon } from "@heroicons/vue/24/outline"
-import {isImage} from "@/helpers.js";
+import {ArrowDownTrayIcon, PaperClipIcon, PlayCircleIcon} from "@heroicons/vue/24/outline"
+import {isImage, isVideo} from "@/helpers.js";
 
 defineProps({
   attachments: Array,
@@ -21,12 +21,18 @@ defineEmits(['attachmentsClick'])
       <!--          /Download btn-->
       <div v-if="index === 3 && attachments.length > 4"
            class="absolute left-0 top-0 right-0 bottom-0 z-10 text-2xl bg-black/50 text-white flex items-center justify-center">
-        + {{attachments.length - 4}} more...
+        + {{ attachments.length - 4 }} more...
       </div>
       <img v-if="isImage(attachment)"
            :src="attachment.url"
            alt=""
            class="object-contain aspect-square">
+
+      <div v-else-if="isVideo(attachment)" class="relative flex justify-center items-center">
+        <PlayCircleIcon class="z-20 absolute w-16 h-16 text-gray-800 text-white opacity-70"/>
+        <div class="absolute left-0 top-0 w-full h-full bg-black/50 z-10"></div>
+        <video :src="attachment.url"></video>
+      </div>
 
       <div v-else class="flex flex-col justify-center items-center">
         <PaperClipIcon class="w-11 h-11"/>
