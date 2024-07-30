@@ -18,7 +18,7 @@ function openPhoto(index) {
 </script>
 
 <template>
-  <div class="grid gap-2 grid-cols-2 sm:grid-cols-3">
+  <div class="grid gap-2 grid-cols-3 sm:grid-cols-5">
     <template v-for="(photo, index) of photos">
       <div @click="openPhoto(index)"
            class="group aspect-square bg-indigo-50 text-gray-500 flex flex-col items-center justify-center relative cursor-pointer rounded-lg">

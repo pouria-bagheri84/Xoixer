@@ -151,10 +151,10 @@ class PostController extends Controller
     {
         $id = Auth::id();
 
-        if ($post->isOwner($id) || $post->group || $post->group->isAdmin($id)){
+        if ($post->isOwner($id) || $post->group || $post->group->isAdmin($id)) {
             $post->delete();
 
-            if (!$post->isOwner($id)){
+            if (!$post->isOwner($id)) {
                 $post->user->notify(new PostDeleted($post->group));
             }
 
@@ -228,10 +228,10 @@ class PostController extends Controller
         $post = $comment->post;
         $id = Auth::id();
 
-        if ($comment->isOwner($id) || $post->isOwner($id)){
+        if ($comment->isOwner($id) || $post->isOwner($id)) {
             $comment->delete();
 
-            if (!$comment->isOwner($id)){
+            if (!$comment->isOwner($id)) {
                 $comment->user->notify(new CommentDeleted($comment, $post));
             }
 
@@ -285,5 +285,43 @@ class PostController extends Controller
             'num_of_reactions' => $reactions,
             'current_user_has_reaction' => $hasReaction,
         ]);
+    }
+
+    public function pinUnpin(Request $request, Post $post)
+    {
+        $forGroup = $request->get('forGroup', false);
+        $group = $post->group;
+
+        if ($forGroup && !$group){
+            return response("Invalid Request", 400);
+        }
+
+        if ($forGroup && !$group->isAdmin(Auth::id())){
+            return response("You Don't Have Permission To Perform This Action", 403);
+        }
+
+        $pinned = false;
+        if ($forGroup && $group->isAdmin(Auth::id())) {
+            if ($group->pinned_post_id === $post->id) {
+                $group->pinned_post_id = null;
+            } else {
+                $pinned = true;
+                $group->pinned_post_id = $post->id;
+            }
+            $group->save();
+        }
+
+        if (!$forGroup) {
+            $user = $request->user();
+            if ($user->pinned_post_id === $post->id) {
+                $user->pinned_post_id = null;
+            } else {
+                $pinned = true;
+                $user->pinned_post_id = $post->id;
+            }
+            $user->save();
+        }
+
+        return back()->with('success', 'Post Was Successfully ' . ( $pinned ? 'Pinned' : 'Unpinned' ));
     }
 }

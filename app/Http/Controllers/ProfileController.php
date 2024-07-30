@@ -33,8 +33,11 @@ class ProfileController extends Controller
 
         $followerCount = Follower::query()->where('user_id', $user->id)->count();
 
-        $posts = Post::postsForTimeline(Auth::id())
+        $posts = Post::postsForTimeline(Auth::id(), false)
+            ->leftJoin('users AS u', 'u.pinned_post_id', 'posts.id')
             ->where('user_id', $user->id)
+            ->orderBy('u.pinned_post_id', 'desc')
+            ->orderBy('posts.created_at', 'desc')
             ->paginate(5);
 
         $posts = PostResource::collection($posts);

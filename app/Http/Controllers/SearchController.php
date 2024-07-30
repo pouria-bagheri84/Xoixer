@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
@@ -30,9 +31,8 @@ class SearchController extends Controller
             ->latest()
             ->get();
 
-        $posts = Post::query()
+        $posts = Post::postsForTimeline(Auth::id())
             ->where('body', 'like', "%$search%")
-            ->latest()
             ->paginate(10);
 
         $posts = PostResource::collection($posts);

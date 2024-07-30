@@ -249,7 +249,7 @@ function followUser() {
                 <TextInput :model-value="searchFollowersKeyword" placeholder="Type to search"
                            class="w-full"/>
               </div>
-              <div v-if="followers.length" class="grid grid-cols-2 gap-3">
+              <div v-if="followers.length" class="grid sm:grid-cols-2 grid-cols-1 gap-3">
                 <UserListItem v-for="user of followers"
                               :user="user"
                               :key="user.id"
@@ -264,7 +264,7 @@ function followUser() {
                 <TextInput :model-value="searchFollowingsKeyword" placeholder="Type to search"
                            class="w-full"/>
               </div>
-              <div v-if="followings.length" class="grid grid-cols-2 gap-3">
+              <div v-if="followings.length" class="grid sm:grid-cols-2 grid-cols-1 gap-3">
                 <UserListItem v-for="user of followings"
                               :user="user"
                               :key="user.id"

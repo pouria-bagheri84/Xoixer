@@ -43,7 +43,7 @@ function onModalHide() {
 <template>
   <Head :title="'Post Page'"/>
   <AuthenticatedLayout>
-    <div class="p-8 w-[600px] mx-auto h-full overflow-auto">
+    <div class="p-8 sm:w-[600px] w-full mx-auto h-full overflow-auto">
       <PostItem
           :post="post"
           @editClick="openEditModal"

@@ -289,7 +289,7 @@ function deleteUser(user) {
             </TabPanel>
             <TabPanel v-if="isJoinedToGroup">
               <TextInput :model-value="searchKeywords" placeholder="Type to search..." class="w-full mb-4"/>
-              <div class="grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <UsersListItem
                     v-for="user of users"
                     :user="user"
