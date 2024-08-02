@@ -22,7 +22,7 @@ defineEmits(['approve', 'reject', 'roleChange', 'delete'])
 </script>
 
 <template>
-  <div class=" bg-white transition-all border-2 border-transparent hover:border-indigo-500">
+  <div class=" bg-white transition-all border-2 border-transparent hover:border-indigo-500 dark:bg-slate-900 dark:text-gray-100">
     <div class="flex items-center gap-2 py-2 px-2">
       <Link :href="route('profile', user.username)">
         <img :src="user.avatar_url || '/img/xoixer-logo.png'" class="w-[32px] h-[32px] rounded-full"/>
@@ -46,7 +46,7 @@ defineEmits(['approve', 'reject', 'roleChange', 'delete'])
         <div v-else-if="showRoleDropdown" class="flex gap-1">
           <div class="mt-2">
             <select
-                class="rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6"
+                class="rounded-md border-0 py-1 dark:bg-slate-300 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6"
                 @change="$emit('roleChange', user, $event.target.value)"
                 :disabled="disableRoleDropdown">
               <option :selected="user.role === 'admin'">admin</option>
@@ -61,11 +61,11 @@ defineEmits(['approve', 'reject', 'roleChange', 'delete'])
         </div>
         <div v-else>
           <span v-if="disableRoleDropdown"
-                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 dark:ring-gray-600/20 dark:bg-gray-600 dark:text-slate-400">
             {{"owner"}}
           </span>
           <span v-else-if="user.role === 'admin'"
-                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 dark:ring-gray-600/20 dark:bg-gray-600 dark:text-slate-400">
             {{"admin"}}
           </span>
         </div>

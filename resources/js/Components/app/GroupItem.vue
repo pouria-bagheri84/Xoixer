@@ -11,14 +11,14 @@ const status = ref('')
 </script>
 
 <template>
-  <div class="hover:bg-gray-100 cursor-pointer">
+  <div class="hover:bg-gray-100 cursor-pointer dark:hover:bg-slate-800">
     <Link :href="route('group.profile', group.slug)" class="flex items-start gap-1 py-2 px-2">
       <img :src="group.thumbnail_url" alt="" class="w-[32px] h-[32px] rounded-full">
       <div class="flex-1">
         <div class="flex justify-between">
-          <h3 class="font-bold text-lg">{{ group.name }}</h3>
+          <h3 class="font-bold text-lg dark:text-slate-300">{{ group.name }}</h3>
 
-          <span :class="{'bg-green-50 ring-green-600/20 text-green-700 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset' : status === 'admin', 'bg-yellow-50 ring-yellow-600/20 text-yellow-700 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset': status === 'not approved'}"
+          <span :class="{'bg-green-50 dark:bg-gray-600 ring-green-600/20 dark:ring-gray-600/20 text-green-700 dark:text-slate-400 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset' : status === 'admin', 'bg-yellow-50 ring-yellow-600/20 text-yellow-700 inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium  ring-1 ring-inset': status === 'not approved'}"
                 v-if="group.status === 'approved' ? (group.role === 'admin' ? status = group.role : '') : status = 'not approved'">
             {{status}}
           </span>

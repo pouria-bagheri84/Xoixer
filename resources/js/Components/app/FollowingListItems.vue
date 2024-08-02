@@ -13,7 +13,7 @@ const searchKeywords = ref('')
 <template>
   <TextInput :model-value="searchKeywords" placeholder="Type to search..." class="w-full mt-4"/>
   <div class="overflow-y-auto h-[200px] lg:flex-1 mt-3">
-    <div v-if="false" class="text-gray-400 text-center p-3">
+    <div v-if="false" class="text-gray-400 text-center p-3 dark:text-slate-300">
       You dont have any friends yet.
     </div>
     <div v-else>

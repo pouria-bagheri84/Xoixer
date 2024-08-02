@@ -17,7 +17,7 @@ defineProps({
 
 <template>
   <div class="space-y-6">
-          <div class="p-4 sm:p-8 bg-white  shadow sm:rounded-lg">
+          <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg dark:bg-slate-900">
               <UpdateProfileInformationForm
                   :must-verify-email="mustVerifyEmail"
                   :status="status"
@@ -25,11 +25,11 @@ defineProps({
               />
           </div>
 
-          <div class="p-4 sm:p-8 bg-white  shadow sm:rounded-lg">
+          <div class="p-4 sm:p-8 bg-white  shadow sm:rounded-lg dark:bg-slate-900">
               <UpdatePasswordForm class="max-w-xl" />
           </div>
 
-          <div class="p-4 sm:p-8 bg-white  shadow sm:rounded-lg">
+          <div class="p-4 sm:p-8 bg-white  shadow sm:rounded-lg dark:bg-slate-900">
               <DeleteUserForm class="max-w-xl" />
           </div>
       </div>

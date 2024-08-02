@@ -22,7 +22,7 @@ function onGroupCreate(group) {
     <button @click="showNewGroupModal = true" class="text-sm bg-indigo-500 hover:bg-indigo-600 text-white rounded py-1 px-2 w-[120px]">create new</button>
   </div>
   <div class="overflow-y-auto h-[200px] lg:flex-1 mt-3">
-    <div v-if="false" class="text-gray-400 text-center p-3">
+    <div v-if="false" class="text-gray-400 text-center p-3 dark:text-slate-300">
       You are not joined to any groups
     </div>
     <div v-else>

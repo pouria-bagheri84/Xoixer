@@ -175,7 +175,7 @@ class PostController extends Controller
         ]);
 
         $userID = Auth::id();
-        $userReaction = Reaction::all()->where('object_id', $post->id)->where('object_type', Post::class)->first();
+        $userReaction = Reaction::all()->where('user_id', $userID)->where('post_id', $post->id)->first();
 
         if ($userReaction) {
             $hasReaction = false;

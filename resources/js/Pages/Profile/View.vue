@@ -131,7 +131,7 @@ function followUser() {
           {{ errors.cover }}
         </div>
 
-        <div class="group relative bg-white">
+        <div class="group relative bg-white dark:bg-slate-950 dark:text-gray-100">
           <img :src="coverImageSrc || user.cover_url || '/img/cover.jpg'"
                class="w-full h-[200px] object-cover rounded-lg">
           <div class="absolute top-2 right-2 " v-if="isMyProfile">
@@ -211,9 +211,9 @@ function followUser() {
           </div>
         </div>
       </div>
-      <div class="p-4">
+      <div class="m-4">
         <TabGroup>
-          <TabList class="flex bg-white rounded-lg shadow">
+          <TabList class="flex bg-white rounded-lg shadow dark:bg-slate-950 dark:text-white">
             <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Posts" :selected="selected"/>
             </Tab>
@@ -236,11 +236,11 @@ function followUser() {
               <template v-if="posts && authUser">
                 <CreatePost v-if="isMyProfile"/>
                 <PostList v-if="posts.data.length" :posts="posts.data" class="flex-1"/>
-                <div v-else class="py-8 text-center">
+                <div v-else class="py-8 text-center dark:text-slate-300">
                   There are no posts in this {{user.name}}'s profile.
                 </div>
               </template>
-              <div v-else class="py-8 text-center">
+              <div v-else class="py-8 text-center dark:text-slate-300">
                 You don't have permission to view these posts.
               </div>
             </TabPanel>
@@ -255,7 +255,7 @@ function followUser() {
                               :key="user.id"
                               class="shadow rounded-lg"/>
               </div>
-              <div v-else class="text-center py-8">
+              <div v-else class="text-center py-8 dark:text-slate-300">
                 {{ user.name }} does not have followers.
               </div>
             </TabPanel>
@@ -270,7 +270,7 @@ function followUser() {
                               :key="user.id"
                               class="shadow rounded-lg"/>
               </div>
-              <div v-else class="text-center py-8">
+              <div v-else class="text-center py-8 dark:text-slate-300">
                 The {{ user.name }} is not following to anybody
               </div>
             </TabPanel>

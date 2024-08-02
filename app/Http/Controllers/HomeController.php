@@ -16,24 +16,26 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $userID = Auth::id();
+        $userId = Auth::id();
         $user = $request->user();
-        $posts = Post::postsForTimeline($userID)
+        $posts = Post::postsForTimeline($userId)
             ->select('posts.*')
-            ->leftJoin('followers AS f', function ($join) use ($userID) {
+            ->leftJoin('followers AS f', function ($join) use ($userId) {
                 $join->on('posts.user_id', '=', 'f.user_id')
-                    ->where('f.follower_id', '=', $userID);
+                    ->where('f.follower_id', '=', $userId);
             })
-            ->leftJoin('group_users AS gu', function ($join) use ($userID) {
+            ->leftJoin('group_users AS gu', function ($join) use ($userId) {
                 $join->on('gu.group_id', '=', 'posts.group_id')
-                    ->where('gu.user_id', '=', $userID)
+                    ->where('gu.user_id', '=', $userId)
                     ->where('gu.status', GroupUserStatus::APPROVED->value);
             })
-            ->where(function ($query) use ($userID) {
+            ->where(function($query) use ($userId) {
+                /** @var \Illuminate\Database\Query\Builder $query */
                 $query->whereNotNull('f.follower_id')
-                    ->orWhereNotNull('gu.group_id');
+                    ->orWhereNotNull('gu.group_id')
+                    ->orWhere('posts.user_id', $userId)
+                ;
             })
-            ->whereNot('posts.user_id', $userID)
             ->paginate(5);
 
         $posts = PostResource::collection($posts);

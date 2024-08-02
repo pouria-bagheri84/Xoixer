@@ -26,7 +26,7 @@ const postBody = computed(()=>
         const encodedGroup = encodeURIComponent(group);
         return  `
                 <a href="/search/${encodedGroup}"
-                class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium ring-1 ring-inset ring-blue-600/20"
+                class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium ring-1 ring-inset ring-blue-600/20 dark:bg-slate-500 dark:ring-slate-600/20"
                 >${group}</a>
                 `
       }
@@ -94,7 +94,7 @@ function sendPostReaction() {
 
 
 <template>
-  <div class="bg-white border rounded p-4 shadow mb-4" :class="[isPinned ? 'border-indigo-500 border-2' : '']">
+  <div class="bg-white border rounded p-4 shadow mb-4 dark:bg-slate-950 dark:border-slate-900 dark:text-gray-100" :class="[isPinned ? 'border-indigo-500 dark:border-blue-600 border-2' : '']">
     <div class="flex items-center justify-between">
       <PostUserHeader :post="post"/>
       <div class="flex items-center gap-2">
@@ -120,17 +120,17 @@ function sendPostReaction() {
         <div class="flex gap-2">
           <button
               @click="sendPostReaction"
-              class="text-gray-800 flex gap-1 items-center justify-center  rounded-lg py-2 px-4 flex-1"
+              class="text-gray-800 flex gap-1 items-center justify-center  rounded-lg py-2 px-4 flex-1 dark:text-gray-100"
               :class="[
                     post.current_user_has_reaction ?
-                     'bg-sky-200 hover:bg-sky-300' :
-                     'bg-gray-100  hover:bg-gray-200'
+                     'bg-sky-200 hover:bg-sky-300 dark:bg-sky-900 dark:hover:bg-sky-950' :
+                     'bg-gray-100  dark:bg-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800'
                 ]">
             <HandThumbUpIcon class="w-5 h-5"/>
             <span class="mr-2">{{ post.num_of_reactions }}</span>
             {{ post.current_user_has_reaction ? 'Unlike' : 'Like' }}
           </button>
-          <DisclosureButton class="text-gray-800 flex gap-1 items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200 py-2 px-4 flex-1">
+          <DisclosureButton class="text-gray-800 flex gap-1 items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200 py-2 px-4 flex-1 dark:text-gray-100 dark:bg-slate-900 dark:hover:bg-slate-800">
             <ChatBubbleLeftRightIcon class="w-5 h-5"/>
             <span class="mr-2">{{ post.num_of_comments }}</span>
             Comment

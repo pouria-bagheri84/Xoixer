@@ -32,7 +32,7 @@ function openPhoto(index) {
         <img v-if="isImage(photo)"
              :src="photo.url"
              alt=""
-             class="object-contain aspect-square rounded-lg">
+             class="object-contain aspect-square rounded-lg w-full h-full">
 
         <div v-else class="flex flex-col justify-center items-center">
           <PaperClipIcon class="w-11 h-11"/>
@@ -42,7 +42,7 @@ function openPhoto(index) {
     </template>
   </div>
 
-  <div v-if="!photos.length" class="py-8 text-center text-gray-600">
+  <div v-if="!photos.length" class="py-8 text-center text-gray-600 dark:text-slate-300">
     There are no photo
   </div>
 

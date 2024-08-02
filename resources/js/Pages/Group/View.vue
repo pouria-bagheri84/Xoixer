@@ -174,7 +174,7 @@ function deleteUser(user) {
         {{ errors.cover }}
       </div>
       <div class="p-4">
-        <div class="group relative bg-white">
+        <div class="group relative bg-white dark:bg-slate-950">
           <img class="w-full h-[200px] object-cover rounded-lg" :src="coverImageSrc || group.cover_url || '/img/cover.jpg'" alt="">
           <div v-if="isCurrentUserAdmin" class="absolute top-2 right-2">
             <button v-if="!coverImageSrc"
@@ -230,7 +230,7 @@ function deleteUser(user) {
               </div>
             </div>
             <div class="flex justify-between items-center flex-1 p-4">
-              <h2 class="font-bold text-lg">{{ group.name }}</h2>
+              <h2 class="font-bold text-lg dark:text-slate-300">{{ group.name }}</h2>
 
               <PrimaryButton v-if="!authUser"
                              :href="route('login')">
@@ -254,9 +254,9 @@ function deleteUser(user) {
         </div>
       </div>
 
-      <div class="p-4">
+      <div class="m-4">
         <TabGroup>
-          <TabList class="flex bg-white rounded-lg shadow">
+          <TabList class="flex bg-white rounded-lg shadow dark:bg-slate-950 dark:text-white">
             <Tab v-slot="{ selected }" as="template" class="rounded-lg">
               <TabItem text="Posts" :selected="selected"/>
             </Tab>
@@ -279,11 +279,11 @@ function deleteUser(user) {
               <template v-if="posts">
                 <CreatePost :group="group"/>
                 <PostList v-if="posts.data.length" :posts="posts.data" class="flex-1"/>
-                <div v-else class="py-8 text-center">
+                <div v-else class="py-8 text-center dark:text-slate-300">
                   There are no posts in this group. Be the first and create it.
                 </div>
               </template>
-              <div v-else class="py-8 text-center">
+              <div v-else class="py-8 text-center dark:text-slate-300">
                 You don't have permission to view these posts.
               </div>
             </TabPanel>
@@ -312,21 +312,26 @@ function deleteUser(user) {
                     @approve="approveUser"
                     @reject="rejectUser"/>
               </div>
-              <div v-else class="py-8 text-center">
-                There Are Not Pending Requests
+              <div v-else class="py-8 text-center dark:text-slate-300">
+                There are not pending requests
               </div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow rounded-lg">
-              <TabPhotos :photos="photos"/>
+            <TabPanel>
+              <template v-if="posts">
+                <TabPhotos :photos="photos"/>
+              </template>
+              <div v-else class="py-8 text-center dark:text-slate-300">
+                You don't have permission to view these posts.
+              </div>
             </TabPanel>
-            <TabPanel class="bg-white p-3 shadow">
+            <TabPanel class="bg-white p-3 shadow dark:bg-slate-950">
               <template v-if="isCurrentUserAdmin">
                 <GroupForm :form="aboutForm"/>
                 <PrimaryButton @click="updateGroup">
                   submit
                 </PrimaryButton>
               </template>
-              <div v-else class="ck-content-output" v-html="group.about"></div>
+              <div v-else class="ck-content-output dark:text-slate-300" v-html="group.about"></div>
             </TabPanel>
           </TabPanels>
         </TabGroup>
