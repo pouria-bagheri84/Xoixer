@@ -94,7 +94,7 @@ function sendPostReaction() {
 
 
 <template>
-  <div class="bg-white border rounded p-4 shadow mb-4 dark:bg-slate-950 dark:border-slate-900 dark:text-gray-100" :class="[isPinned ? 'border-indigo-500 dark:border-blue-600 border-2' : '']">
+  <div class="bg-white border rounded p-4 shadow mb-4 dark:bg-slate-950 dark:text-gray-100" :class="[isPinned ? 'border-indigo-500 dark:border-blue-600 border-2' : 'dark:border-slate-900']">
     <div class="flex items-center justify-between">
       <PostUserHeader :post="post"/>
       <div class="flex items-center gap-2">
