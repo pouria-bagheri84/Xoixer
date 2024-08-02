@@ -254,7 +254,7 @@ function deleteUser(user) {
         </div>
       </div>
 
-      <div class="m-4">
+      <div class="m-4 mt-0">
         <TabGroup>
           <TabList class="flex bg-white rounded-lg shadow dark:bg-slate-950 dark:text-white">
             <Tab v-slot="{ selected }" as="template" class="rounded-lg">
