@@ -321,7 +321,7 @@ function deleteUser(user) {
                 <TabPhotos :photos="photos"/>
               </template>
               <div v-else class="py-8 text-center dark:text-slate-300">
-                You don't have permission to view these posts.
+                You don't have permission to view these photos.
               </div>
             </TabPanel>
             <TabPanel class="bg-white p-3 shadow dark:bg-slate-950">

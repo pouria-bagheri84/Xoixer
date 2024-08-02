@@ -199,7 +199,7 @@ function followUser() {
                 <p class="text-xs text-gray-500">{{ followerCount }} follower(s)</p>
               </div>
 
-              <div v-if="authUser && !isMyProfile">
+              <div v-if="!isMyProfile">
                 <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
                   Follow User
                 </PrimaryButton>
@@ -245,37 +245,52 @@ function followUser() {
               </div>
             </TabPanel>
             <TabPanel>
-              <div class="mb-3">
-                <TextInput :model-value="searchFollowersKeyword" placeholder="Type to search"
-                           class="w-full"/>
-              </div>
-              <div v-if="followers.length" class="grid sm:grid-cols-2 grid-cols-1 gap-3">
-                <UserListItem v-for="user of followers"
-                              :user="user"
-                              :key="user.id"
-                              class="shadow rounded-lg"/>
-              </div>
-              <div v-else class="text-center py-8 dark:text-slate-300">
-                {{ user.name }} does not have followers.
-              </div>
-            </TabPanel>
-            <TabPanel>
-              <div class="mb-3">
-                <TextInput :model-value="searchFollowingsKeyword" placeholder="Type to search"
-                           class="w-full"/>
-              </div>
-              <div v-if="followings.length" class="grid sm:grid-cols-2 grid-cols-1 gap-3">
-                <UserListItem v-for="user of followings"
-                              :user="user"
-                              :key="user.id"
-                              class="shadow rounded-lg"/>
-              </div>
-              <div v-else class="text-center py-8 dark:text-slate-300">
-                The {{ user.name }} is not following to anybody
+              <template v-if="authUser">
+                <div class="mb-3">
+                  <TextInput :model-value="searchFollowersKeyword" placeholder="Type to search"
+                             class="w-full"/>
+                </div>
+                <div v-if="followers.length && authUser" class="grid sm:grid-cols-2 grid-cols-1 gap-3">
+                  <UserListItem v-for="user of followers"
+                                :user="user"
+                                :key="user.id"
+                                class="shadow rounded-lg"/>
+                </div>
+                <div v-else class="text-center py-8 dark:text-slate-300">
+                  {{ user.name }} does not have followers.
+                </div>
+              </template>
+              <div v-else class="py-8 text-center dark:text-slate-300">
+                You don't have permission to view followers of {{user.name}}.
               </div>
             </TabPanel>
             <TabPanel>
-              <TabPhotos :photos="photos"/>
+              <template v-if="authUser">
+                <div class="mb-3">
+                  <TextInput :model-value="searchFollowingsKeyword" placeholder="Type to search"
+                             class="w-full"/>
+                </div>
+                <div v-if="followings.length && authUser" class="grid sm:grid-cols-2 grid-cols-1 gap-3">
+                  <UserListItem v-for="user of followings"
+                                :user="user"
+                                :key="user.id"
+                                class="shadow rounded-lg"/>
+                </div>
+                <div v-else class="text-center py-8 dark:text-slate-300">
+                  The {{ user.name }} is not following to anybody
+                </div>
+              </template>
+              <div v-else class="py-8 text-center dark:text-slate-300">
+                You don't have permission to view followings of {{user.name}}.
+              </div>
+            </TabPanel>
+            <TabPanel>
+              <template v-if="authUser && posts">
+                <TabPhotos :photos="photos"/>
+              </template>
+              <div v-else class="py-8 text-center dark:text-slate-300">
+                You don't have permission to view these photos.
+              </div>
             </TabPanel>
             <TabPanel v-if="isMyProfile">
               <Edit :must-verify-email="mustVerifyEmail" :status="status"/>
