@@ -285,7 +285,7 @@ function followUser() {
               </div>
             </TabPanel>
             <TabPanel>
-              <template v-if="authUser && posts">
+              <template v-if="authUser || posts">
                 <TabPhotos :photos="photos"/>
               </template>
               <div v-else class="py-8 text-center dark:text-slate-300">

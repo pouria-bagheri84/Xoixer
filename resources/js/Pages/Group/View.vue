@@ -317,7 +317,7 @@ function deleteUser(user) {
               </div>
             </TabPanel>
             <TabPanel>
-              <template v-if="posts">
+              <template v-if="posts || authUser">
                 <TabPhotos :photos="photos"/>
               </template>
               <div v-else class="py-8 text-center dark:text-slate-300">

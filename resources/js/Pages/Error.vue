@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {Head} from "@inertiajs/vue3";
 defineProps({
   title: String,
-  // body: String
+  body: String
 })
 
 </script>
@@ -11,9 +11,9 @@ defineProps({
 <template>
   <Head title="Error"/>
   <AuthenticatedLayout>
-    <div class="p-16 text-center">
+    <div class="p-16 text-center dark:text-gray-100">
       <h1 class="text-2xl">{{ title }}</h1>
-<!--      <div>{{ body }}</div>-->
+      <div>{{ body }}</div>
     </div>
   </AuthenticatedLayout>
 </template>

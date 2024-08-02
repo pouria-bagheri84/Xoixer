@@ -16,7 +16,7 @@ const props = defineProps({
   }
 })
 
-const authUser = usePage().props.auth.user
+const authUser = usePage().props.auth.user || {};
 const group = usePage().props.group
 
 const user = computed(() => props.comment?.user || props.post?.user)
@@ -78,6 +78,7 @@ function copyToClipboard() {
         leave-to-class="transform scale-95 opacity-0"
     >
       <MenuItems
+          v-if="authUser"
           class="z-30 absolute right-0 mt-2 w-48 origin-top-right divide-y divide-gray-100 dark:divide-slate-600 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 focus:outline-none"
       >
         <div class="px-1 py-1">

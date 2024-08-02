@@ -172,7 +172,6 @@ function undoDelete(myFile) {
 <template>
   <BaseModal :title="post.id ? 'Update Post' : 'Create Post'"
              v-model="show"
-             class="dark:text-gray-100"
              @hide="closeModal">
     <div class="p-4">
       <PostUserHeader :post="post" :show-time="false" class="mb-4 dark:text-gray-100"/>
@@ -202,8 +201,7 @@ function undoDelete(myFile) {
                                         computedAttachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2'
                                     ]">
         <div v-for="(myFile, ind) of computedAttachments">
-          <div
-              class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative border-2"
+          <div class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative border-2"
               :class="attachmentErrors[ind] ? 'border-red-500' : ''">
 
             <div v-if="myFile.deleted"
