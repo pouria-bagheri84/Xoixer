@@ -6,6 +6,10 @@
     height: 100%;
 }
 
+body * {
+    @apply transition-colors duration-100;
+}
+
 .ck-content > blockquote,
 .ck-content > dl,
 .ck-content > dd,
