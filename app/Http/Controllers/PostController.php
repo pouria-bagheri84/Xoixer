@@ -181,25 +181,28 @@ class PostController extends Controller
             'reaction' => [Rule::enum(ReactionEnum::class)]
         ]);
 
-        $userID = Auth::id();
-        $userReaction = Reaction::all()->where('user_id', $userID)->where('post_id', $post->id)->first();
+        $userId = Auth::id();
+        $reaction = Reaction::where('user_id', $userId)
+            ->where('object_id', $post->id)
+            ->where('object_type', Post::class)
+            ->first();
 
-        if ($userReaction) {
+        if ($reaction) {
             $hasReaction = false;
-            $userReaction->delete();
+            $reaction->delete();
         } else {
             $hasReaction = true;
             Reaction::create([
                 'object_id' => $post->id,
                 'object_type' => Post::class,
-                'user_id' => $userID,
+                'user_id' => $userId,
                 'type' => $data['reaction']
             ]);
-        }
 
-        if (!$post->isOwner($userID)) {
-            $user = User::where('id', $userID)->first();
-            $post->user->notify(new ReactionAddedOnPost($post, $user));
+            if (!$post->isOwner($userId)) {
+                $user = User::all()->where('id', $userId)->first();
+                $post->user->notify(new ReactionAddedOnPost($post, $user));
+            }
         }
 
         $reactions = Reaction::all()->where('object_id', $post->id)->where('object_type', Post::class)->count();

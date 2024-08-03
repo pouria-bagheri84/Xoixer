@@ -86,7 +86,7 @@ function sendPostReaction() {
     reaction: 'like'
   })
       .then(({data}) => {
-        props.post.current_user_has_reaction = data.current_user_has_reaction;
+        props.post.current_user_has_reaction = data.current_user_has_reaction
         props.post.num_of_reactions = data.num_of_reactions;
       })
 }
@@ -120,12 +120,13 @@ function sendPostReaction() {
         <div class="flex gap-2">
           <button
               @click="sendPostReaction"
-              class="text-gray-800 flex gap-1 items-center justify-center  rounded-lg py-2 px-4 flex-1 dark:text-gray-100"
+              class="text-gray-800 dark:text-gray-100 flex gap-1 items-center justify-center  rounded-lg py-2 px-4 flex-1"
               :class="[
                     post.current_user_has_reaction ?
-                     'bg-sky-200 hover:bg-sky-300 dark:bg-sky-900 dark:hover:bg-sky-950' :
-                     'bg-gray-100  dark:bg-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800'
-                ]">
+                     'bg-sky-100 dark:bg-sky-900 hover:bg-sky-200 dark:hover:bg-sky-950' :
+                     'bg-gray-100 dark:bg-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 '
+                ]"
+          >
             <HandThumbUpIcon class="w-5 h-5"/>
             <span class="mr-2">{{ post.num_of_reactions }}</span>
             {{ post.current_user_has_reaction ? 'Unlike' : 'Like' }}

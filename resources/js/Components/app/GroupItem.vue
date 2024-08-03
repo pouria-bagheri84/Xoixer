@@ -11,7 +11,7 @@ const status = ref('')
 </script>
 
 <template>
-  <div class="hover:bg-gray-100 cursor-pointer dark:hover:bg-slate-800">
+  <div class="hover:bg-gray-100 cursor-pointer dark:hover:bg-slate-800 rounded-lg">
     <Link :href="route('group.profile', group.slug)" class="flex items-start gap-1 py-2 px-2">
       <img :src="group.thumbnail_url" alt="" class="w-[32px] h-[32px] rounded-full">
       <div class="flex-1">

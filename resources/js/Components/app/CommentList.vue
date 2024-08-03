@@ -32,6 +32,7 @@ function startCommentEdit(comment) {
     comment: comment.comment.replace(/<br\s*\/?>/gi, '\n') // <br />, <br > <br> <br/>, <br    />
   }
 }
+
 function createComment() {
   axiosClient.post(route('comment.create', props.post), {
     comment: newCommentText.value,
@@ -47,6 +48,7 @@ function createComment() {
         emit('commentCreate', data)
       })
 }
+
 function deleteComment(comment) {
   if (!window.confirm('Are you sure you want to delete this comment?')) {
     return false;
@@ -56,12 +58,13 @@ function deleteComment(comment) {
         const commentIndex = props.data.comments.findIndex(c => c.id === comment.id)
         props.data.comments.splice(commentIndex, 1)
         if (props.parentComment) {
-          props.parentComment.num_of_comments--;
+          props.parentComment.num_of_comments -= data.deleted;
         }
-        props.post.num_of_comments--;
+        props.post.num_of_comments -= data.deleted;
         emit('commentDelete', comment)
       })
 }
+
 function updateComment() {
   axiosClient.put(route('comment.update', editingComment.value.id), editingComment.value)
       .then(({data}) => {
@@ -74,6 +77,7 @@ function updateComment() {
         })
       })
 }
+
 function sendCommentReaction(comment) {
   axiosClient.post(route('comment.reaction', comment.id), {
     reaction: 'like'
@@ -90,6 +94,7 @@ function onCommentCreate(comment) {
   }
   emit('commentCreate', comment)
 }
+
 function onCommentDelete(comment) {
   if (props.parentComment) {
     props.parentComment.num_of_comments--;
@@ -98,14 +103,14 @@ function onCommentDelete(comment) {
 }
 </script>
 <template>
-  <div class="flex gap-2 mb-3 mt-3">
+  <div v-if="authUser" class="flex gap-2 mb-3 mt-3">
     <Link :href="route('profile', authUser.username)">
       <img :src="authUser.avatar_url"
            class="w-[40px] h-[40px] rounded-full border border-2 transition-all hover:border-blue-500"/>
     </Link>
     <div class="flex flex-1">
       <InputTextarea v-model="newCommentText" placeholder="Enter your comment here" rows="1"
-                     class="w-full max-h-[160px] resize-none rounded-r-none"></InputTextarea>
+                     class="w-full max-h-[160px] resize-none rounded-r-none border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm dark:border-slate-700 dark:bg-slate-900"></InputTextarea>
       <IndigoButton @click="createComment" class="rounded-l-none w-[100px] ">Submit</IndigoButton>
     </div>
   </div>
@@ -146,16 +151,18 @@ function onCommentDelete(comment) {
           <div class="mt-1 flex gap-2">
             <button @click="sendCommentReaction(comment)"
                     class="flex items-center text-xs text-indigo-500 py-0.5 px-1  rounded-lg"
-                    :class="[comment.current_user_has_reaction ?
-                             'bg-indigo-50 hover:bg-indigo-100' :
-                             'hover:bg-indigo-50']">
+                    :class="[
+                        comment.current_user_has_reaction ?
+                        'bg-indigo-100 dark:bg-indigo-900 text-indigo-500 hover:bg-indigo-300 hover:text-white dark:hover:bg-indigo-500' :
+                        'hover:bg-indigo-100 dark:hover:bg-indigo-900'
+                    ]">
 
               <HandThumbUpIcon class="w-3 h-3 mr-1"/>
               <span class="mr-2">{{ comment.num_of_reactions }}</span>
               {{ comment.current_user_has_reaction ? 'unlike' : 'like' }}
             </button>
             <DisclosureButton
-                class="flex items-center text-xs text-indigo-500 py-0.5 px-1 hover:bg-indigo-100 rounded-lg">
+                class="flex items-center text-xs text-indigo-500 py-0.5 px-1 hover:bg-indigo-100 dark:hover:bg-indigo-500 dark:hover:text-white rounded-lg">
               <ChatBubbleLeftEllipsisIcon class="w-3 h-3 mr-1"/>
               <span class="mr-2">{{ comment.num_of_comments }}</span>
               reply
@@ -170,6 +177,9 @@ function onCommentDelete(comment) {
           </DisclosurePanel>
         </Disclosure>
       </div>
+    </div>
+    <div v-if="!data.comments.length" class="py-4 text-center dark:text-gray-100">
+      There are no comments
     </div>
   </div>
 </template>
